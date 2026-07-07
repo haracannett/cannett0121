@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="福祉語学">
+  <title>LangBegin Welfare</title>
+  <style>
+    :root { --primary: #2c3e50; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; 
+      margin: 0; padding: 0; 
+      background: linear-gradient(135deg, #e6f0fa 0%, #d4e4f5 100%); 
+      min-height: 100vh; 
+      -webkit-tap-highlight-color: transparent;
+    }
+    .container { 
+      max-width: 920px; 
+      margin: 0 auto; 
+      background: white; 
+      min-height: 100vh; 
+    }
+    @media (min-width: 768px) {
+      .container { margin: 10px auto; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); min-height: auto; }
+    }
+    .header { 
+      text-align: center; 
+      padding: 20px 15px 15px; 
+      background: var(--primary); 
+      color: white; 
+    }
+    .lang-select { 
+      display: flex; 
+      justify-content: center; 
+      gap: 15px; 
+      padding: 25px 15px; 
+      background: #f0f4f8; 
+      flex-wrap: wrap;
+    }
+    button { 
+      padding: 16px 24px; 
+      font-size: 17px; 
+      border: none; 
+      border-radius: 12px; 
+      cursor: pointer; 
+      transition: all 0.2s; 
+    }
+    button:active { transform: scale(0.96); }
+    .it { background: #e74c3c; color: white; }
+    .fr { background: #2980b9; color: white; }
+    .nav { 
+      display: flex; 
+      background: #ecf0f1; 
+      padding: 8px; 
+      flex-wrap: wrap; 
+    }
+    .nav button { 
+      flex: 1; 
+      margin: 4px; 
+      padding: 14px 10px; 
+      font-size: 15px; 
+      background: white; 
+      color: #2c3e50; 
+    }
+    .nav button.active { background: var(--primary); color: white; }
+    .section { padding: 20px 15px; display: none; }
+    .section.active { display: block; }
+    .card { 
+      background: white; 
+      padding: 35px 20px; 
+      border-radius: 16px; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+      text-align: center; 
+      margin-bottom: 20px; 
+      cursor: pointer; 
+    }
+    .lesson { 
+      background: #f8f9fa; 
+      padding: 18px; 
+      border-radius: 12px; 
+      margin-bottom: 15px; 
+      border-left: 5px solid #3498db; 
+      cursor: pointer;
+    }
+    .lesson.completed { background: #d5f4e6; border-left-color: #27ae60; }
+    .sentence { background: #fff3cd; padding: 14px; border-radius: 10px; margin: 10px 0; font-size: 15.5px; }
+    .stats { background: #ecf0f1; padding: 14px; border-radius: 12px; margin: 15px 0; font-size: 15px; color: #2c3e50; }
+    .options { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 25px; }
+    @media (min-width: 600px) { .options { grid-template-columns: 1fr 1fr; } }
+    .option-btn { 
+      padding: 18px; 
+      font-size: 16px; 
+      background: #ecf0f1; 
+      border: 2px solid #bdc3c7; 
+      border-radius: 12px; 
+      text-align: left; 
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    /* 【修正】クイズの正解・不正解時のスタイルを追加 */
+    .option-btn.correct { background: #2ecc71 !important; color: white; border-color: #27ae60; }
+    .option-btn.wrong { background: #e74c3c !important; color: white; border-color: #c0392b; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🌍 LangBegin Welfare</h1>
+      <p>高齢者介護・児童福祉・精神保健</p>
+      <div id="progressStats" class="stats" style="display:none;"></div>
+    </div>
+
+    <div class="lang-select" id="langSelect">
+      <button class="it" onclick="selectLanguage('it')">🇮🇹 イタリア語</button>
+      <button class="fr" onclick="selectLanguage('fr')">🇫🇷 フランス語</button>
+    </div>
+
+    <div id="app" style="display:none;">
+      <div class="nav">
+        <button onclick="showSection('flashcard')">📇 福祉単語</button>
+        <button onclick="showSection('grammar')">📖 実践文例</button>
+        <button onclick="showSection('quiz')">❓ クイズ</button>
+      </div>
+
+      <div id="flashcard" class="section active">
+        <div class="card" onclick="flipCard()">
+          <h2 id="word" style="font-size:2rem;"></h2>
+          <p id="translation" style="display:none; font-size:1.6rem; margin-top:30px; color:#2c3e50;"></p>
+        </div>
+        <div style="text-align:center; margin-top:20px;">
+          <button onclick="speak()" style="margin:5px;">🔊 発音</button>
+          <button onclick="nextCard()" style="margin:5px;">次の単語</button>
+          <button onclick="markAsLearned()" style="margin:5px;">✅ 覚えた</button>
+        </div>
+      </div>
+
+      <div id="grammar" class="section">
+        <h2 style="text-align:center; margin-bottom:20px;">現場で使える実践例文</h2>
+        <div id="lessonsContainer"></div>
+      </div>
+
+      <div id="quiz" class="section">
+        <div style="text-align:center; margin-bottom:15px;">
+          <h2>福祉クイズ - <span id="quizLang"></span></h2>
+        </div>
+        <div class="card">
+          <h3 id="question" style="margin-bottom:25px;"></h3>
+          <div class="options" id="options"></div>
+        </div>
+        <div id="feedback" style="margin-top:20px; padding:15px; border-radius:12px; text-align:center; display:none; font-size:16px;"></div>
+        <div style="text-align:center; margin-top:20px;">
+          <button id="nextBtn" onclick="nextQuestion()" style="display:none; padding:14px 40px; font-size:17px; background: var(--primary); color: white;">次の問題</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentLang = 'it';
+    let currentWords = [];
+    let currentIndex = 0;
+    let learnedWords = new Set();
+    let completedLessons = new Set();
+    let bestScore = 0;
+    let score = 0;
+    let currentQ = 0;
+    let quizQuestions = [];
+
+    const vocabulary = {
+      it: [
+        { word: "Assistente sociale", translation: "ソーシャルワーカー", pronunciation: "アシステンテ ソチアーレ" },
+        { word: "Assistenza domiciliare", translation: "訪問介護", pronunciation: "アシステンツァ ドミチリアーレ" },
+        { word: "Casa di riposo", translation: "介護施設", pronunciation: "カーサ ディ リーposo" },
+        { word: "Demenza", translation: "認知症", pronunciation: "デメンツァ" },
+        { word: "Geriatria", translation: "老年医学", pronunciation: "ジェリアトリア" },
+        { word: "Protezione minori", translation: "児童保護", pronunciation: "プロテツィオーネ ミノーリ" },
+        { word: "Maltrattamento", translation: "虐待", pronunciation: "マルトラットメント" },
+        { word: "Salute mentale", translation: "精神保健", pronunciation: "サルーテ メンターレ" },
+        { word: "Depressione", translation: "うつ病", pronunciation: "デプレッシオーネ" },
+        { word: "Ansia", translation: "不安障害", pronunciation: "アンシア" }
+      ],
+      fr: [
+        { word: "Assistant social", translation: "ソーシャルワーカー", pronunciation: "アシスタン ソシアル" },
+        { word: "Aide à domicile", translation: "訪問介護", pronunciation: "エード ア ドミシル" },
+        { word: "Maison de retraite", translation: "介護施設", pronunciation: "メゾン ド ルトレート" },
+        { word: "Démence", translation: "認知症", pronunciation: "デマンス" },
+        { word: "Gériatrie", translation: "老年医学", pronunciation: "ジェリアトリ" },
+        { word: "Protection de l'enfance", translation: "児童保護", pronunciation: "プロテクシオン ド ランファンス" },
+        { word: "Maltraitance", translation: "虐待", pronunciation: "マルトレタンス" },
+        { word: "Santé mentale", translation: "精神保健", pronunciation: "サンテ マンタル" },
+        { word: "Dépression", translation: "うつ病", pronunciation: "デプレシオン" },
+        { word: "Anxiété", translation: "不安", pronunciation: "アンシエテ" }
+      ]
+    };
+
+    const exampleSentences = {
+      it: [
+        { title: "高齢者介護", content: "L'anziano ha bisogno di assistenza domiciliare ogni giorno.\n= その高齢者は毎日訪問介護が必要です。" },
+        { title: "児童福祉", content: "Il bambino è in pericolo. Dobbiamo contattare i servizi sociali.\n= その子は危険な状態です。児童相談所に連絡する必要があります。" },
+        { title: "精神保健", content: "La persona sta avendo una crisis d'ansia. Possiamo aiutarla?\n= その人は不安発作を起こしています。支援できますか？" }
+      ],
+      fr: [
+        { title: "高齢者介護", content: "La personne âgée a besoin d'aide à domicile tous les jours.\n= その高齢者は毎日訪問介護が必要です。" },
+        { title: "児童福祉", content: "L'enfant est en danger. Nous devons contacter les services sociaux.\n= その子は危険です。児童相談所に連絡する必要があります。" },
+        { title: "精神保健", content: "La personne fait une crise d'anxiété. Pouvons-nous l'aider ?\n= その人は不安発作を起こしています。支援できますか？" }
+      ]
+    };
+
+    function loadProgress() {
+      const data = JSON.parse(localStorage.getItem(`welfare_${currentLang}`) || '{}');
+      learnedWords = new Set(data.learned || []);
+      completedLessons = new Set(data.completed || []);
+      bestScore = data.bestScore || 0;
+    }
+
+    function saveProgress() {
+      localStorage.setItem(`welfare_${currentLang}`, JSON.stringify({
+        learned: Array.from(learnedWords),
+        completed: Array.from(completedLessons),
+        bestScore
+      }));
+      updateStats();
+    }
+
+    function updateStats() {
+      const stats = document.getElementById('progressStats');
+      stats.style.display = 'block';
+      stats.innerHTML = `単語習得: <strong>${learnedWords.size}</strong> / ${currentWords.length} | 最高スコア: <strong>${bestScore}</strong>`;
+    }
+
+    function selectLanguage(lang) {
+      currentLang = lang;
+      currentWords = vocabulary[lang];
+      loadProgress();
+      document.getElementById('langSelect').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      document.getElementById('quizLang').textContent = lang === 'it' ? 'イタリア語' : 'フランス語';
+      currentIndex = 0;
+      showSection('flashcard');
+      showCard();
+      updateStats();
+    }
+
+    function showCard() {
+      const card = currentWords[currentIndex];
+      document.getElementById('word').textContent = card.word;
+      const trans = document.getElementById('translation');
+      trans.textContent = card.translation;
+      trans.style.display = 'none';
+    }
+
+    function flipCard() {
+      const trans = document.getElementById('translation');
+      trans.style.display = trans.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function nextCard() {
+      currentIndex = (currentIndex + 1) % currentWords.length;
+      showCard();
+    }
+
+    function speak() {
+      if ('speechSynthesis' in window) {
+        const card = currentWords[currentIndex];
+        const utterance = new SpeechSynthesisUtterance(card.word);
+        utterance.lang = currentLang === 'it' ? 'it-IT' : 'fr-FR';
+        speechSynthesis.speak(utterance);
+      }
+    }
+
+    function markAsLearned() {
+      learnedWords.add(currentWords[currentIndex].word);
+      saveProgress();
+      alert('✅ 学習済みに登録しました');
+      nextCard();
+    }
+
+    function renderLessons() {
+      const container = document.getElementById('lessonsContainer');
+      container.innerHTML = '';
+      exampleSentences[currentLang].forEach((lesson, i) => {
+        const div = document.createElement('div');
+        div.className = `lesson ${completedLessons.has('ex'+i) ? 'completed' : ''}`;
+        div.innerHTML = `<strong>${lesson.title}</strong><div class="sentence">${lesson.content.replace('\n', '<br>')}</div>`;
+        div.onclick = () => { 
+          if (completedLessons.has('ex'+i)) {
+            completedLessons.delete('ex'+i);
+          } else {
+            completedLessons.add('ex'+i);
+          }
+          saveProgress(); 
+          renderLessons(); 
+        };
+        container.appendChild(div);
+      });
+    }
+
+    function startQuiz() {
+      score = 0; currentQ = 0;
+      /* 【修正】選択肢生成時のフィルタバグを修正 */
+      quizQuestions = [...currentWords].sort(() => Math.random() - 0.5).slice(0, 8).map(item => ({
+        question: `"${item.word}" の意味は？`,
+        correct: item.translation,
+        options: [
+          item.translation, 
+          ...currentWords.filter(w => w.word !== item.word).sort(() => Math.random() - 0.5).slice(0,3).map(w => w.translation)
+        ].sort(() => Math.random() - 0.5)
+      }));
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = quizQuestions[currentQ];
+      document.getElementById('question').textContent = q.question;
+      const container = document.getElementById('options');
+      container.innerHTML = '';
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt, q.correct, btn);
+        container.appendChild(btn);
+      });
+      document.getElementById('feedback').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'none';
+    }
+
+    function checkAnswer(selected, correct, btn) {
+      document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+      if (selected === correct) score++;
+      btn.classList.add(selected === correct ? 'correct' : 'wrong');
+      document.querySelectorAll('.option-btn').forEach(b => {
+        if (b.textContent === correct) b.classList.add('correct');
+      });
+      const fb = document.getElementById('feedback');
+      fb.style.display = 'block';
+      fb.innerHTML = selected === correct ? '✅ 正解！' : `❌ 不正解<br>正解: <strong>${correct}</strong>`;
+      document.getElementById('nextBtn').style.display = 'inline-block';
+    }
+
+    function nextQuestion() {
+      currentQ++;
+      if (currentQ < quizQuestions.length) showQuestion();
+      else finishQuiz();
+    }
+
+    function finishQuiz() {
+      if (score > bestScore) bestScore = score;
+      saveProgress();
+      document.getElementById('question').innerHTML = `クイズ完了！<br><span style="font-size:2.8rem;color:#27ae60;">${Math.round(score/quizQuestions.length*100)}%</span>`;
+      document.getElementById('options').innerHTML = `<button onclick="startQuiz()" style="padding:16px 40px; background: var(--primary); color: white;">もう一度挑戦</button>`;
+      document.getElementById('feedback').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'none';
+    }
+
+    function showSection(section) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(section).classList.add('active');
+      document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.getAttribute('onclick').includes(section)));
+      if (section === 'quiz') startQuiz();
+      if (section === 'grammar') renderLessons();
+    }
+
+    window.onload = () => {
+      console.log('%cLangBegin Welfare iPhone版 起動', 'color:#2c3e50;font-size:14px;');
+    };
+  </script>
+</body>
+</html>
