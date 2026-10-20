@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>セル道場</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=JetBrains+Mono:wght@400;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: 方眼紙のような静かな下地に、練習用シートだけが「道具」として浮かぶ。黄色の蛍光ペン＝取り組むセル。 */
+:root {
+  --bg: #eef1f6;
+  --surface: #ffffff;
+  --ink: #18202e;
+  --muted: #5a6577;
+  --line: #d3d9e3;
+  --head: #e6eaf1;
+  --accent: #2346c4;
+  --accent-ink: #ffffff;
+  --accent-soft: #e3e9fb;
+  --mark: #fff2a8;
+  --mark-edge: #e0b400;
+  --ok: #1d7f47;
+  --ok-soft: #e1f3e8;
+  --ng: #c0352a;
+  --ng-soft: #fbe6e3;
+  --r1: #2a62e0;
+  --r2: #d1372b;
+  --r3: #8a3fd1;
+  --r4: #138a5a;
+  --font-display: "Dela Gothic One", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10141b; --surface: #181e28; --ink: #e4e8ef; --muted: #9aa4b6; --line: #2d3646; --head: #1f2632;
+    --accent: #7f9cff; --accent-ink: #0d1220; --accent-soft: #232d48; --mark: #3d3510; --mark-edge: #c9a21a;
+    --ok: #57c78a; --ok-soft: #173326; --ng: #ff7d6e; --ng-soft: #3a1c1a;
+    --r1: #6f9bff; --r2: #ff7466; --r3: #c08bff; --r4: #4fd39a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10141b; --surface: #181e28; --ink: #e4e8ef; --muted: #9aa4b6; --line: #2d3646; --head: #1f2632;
+  --accent: #7f9cff; --accent-ink: #0d1220; --accent-soft: #232d48; --mark: #3d3510; --mark-edge: #c9a21a;
+  --ok: #57c78a; --ok-soft: #173326; --ng: #ff7d6e; --ng-soft: #3a1c1a;
+  --r1: #6f9bff; --r2: #ff7466; --r3: #c08bff; --r4: #4fd39a;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.75;
+  -webkit-tap-highlight-color: transparent;
+}
+button, input { font: inherit; color: inherit; }
+code, .mono { font-family: var(--font-mono); font-size: 0.92em; }
+code, .mono, kbd, .syntax, .keys, .finput, .grid, .namebox, .card .fx { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+code { background: var(--head); padding: 0.05em 0.35em; border-radius: 4px; white-space: nowrap; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- header ---------- */
+.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; gap: 12px 24px; flex-wrap: wrap; padding-block: 12px; }
+.logo { display: flex; align-items: baseline; gap: 10px; text-decoration: none; color: var(--ink); }
+.logo b { font-family: var(--font-display); font-weight: 400; font-size: 1.55rem; letter-spacing: 0.04em; line-height: 1; }
+.logo span { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.08em; }
+.nav { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+.nav a {
+  text-decoration: none; color: var(--muted); padding: 6px 12px; border-radius: 6px; font-weight: 500; font-size: 0.92rem;
+}
+.nav a:hover { color: var(--ink); background: var(--head); }
+.nav a[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+
+main { padding-block: 28px 64px; }
+h1, h2, h3 { line-height: 1.35; text-wrap: balance; margin: 0; }
+.eyebrow { font-size: 0.75rem; letter-spacing: 0.14em; color: var(--muted); font-weight: 700; }
+
+/* ---------- home ---------- */
+.intro { display: grid; gap: 8px; margin-bottom: 28px; max-width: 46rem; }
+.intro h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.6rem, 4vw, 2.3rem); letter-spacing: 0.02em; }
+.intro p { margin: 0; color: var(--muted); }
+.level { margin-top: 36px; }
+.level-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.level-head h2 { font-size: 1.25rem; display: flex; align-items: baseline; gap: 10px; }
+.level-head h2 small { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+.meter { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.meter i { display: block; width: 140px; height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.meter i u { display: block; height: 100%; background: var(--accent); text-decoration: none; transition: width .4s; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.card {
+  display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: start;
+  text-align: left; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  cursor: pointer; transition: border-color .15s, transform .15s;
+}
+.card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.card .no {
+  grid-row: span 2; width: 34px; height: 34px; display: grid; place-items: center;
+  font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--muted);
+  border: 1px solid var(--line); background: var(--head);
+}
+.card.done .no { background: var(--ok); color: var(--surface); border-color: var(--ok); }
+.card h3 { font-size: 1rem; font-weight: 700; }
+.card p { margin: 0; font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+.card .fx { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); }
+
+.side-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 40px; }
+.side-links a {
+  display: grid; gap: 2px; padding: 16px 18px; text-decoration: none; color: var(--ink);
+  border: 1px dashed var(--line); border-radius: 8px; background: transparent;
+}
+.side-links a:hover { border-color: var(--accent); border-style: solid; }
+.side-links b { font-size: 1rem; }
+.side-links span { font-size: 0.84rem; color: var(--muted); }
+
+/* ---------- lesson ---------- */
+.back { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; font-weight: 500; margin-bottom: 14px; }
+.lesson { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+@media (min-width: 980px) { .lesson { grid-template-columns: minmax(0, 400px) minmax(0, 1fr); align-items: start; } }
+.lesson-text { display: grid; gap: 16px; min-width: 0; }
+.lesson-text h1 { font-size: 1.5rem; }
+.chip {
+  display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; padding: 2px 10px;
+  border-radius: 999px; background: var(--accent-soft); color: var(--accent);
+}
+.explain { display: grid; gap: 10px; }
+.explain p { margin: 0; }
+.explain ul { margin: 0; padding-left: 1.2em; }
+.explain table { border-collapse: collapse; font-size: 0.88rem; }
+.explain th, .explain td { border: 1px solid var(--line); padding: 3px 10px; text-align: left; }
+.explain th { background: var(--head); font-weight: 500; }
+.tablebox { overflow-x: auto; }
+.syntax {
+  font-family: var(--font-mono); font-size: 0.88rem; background: var(--surface); border: 1px solid var(--line);
+  border-left: 3px solid var(--accent); padding: 8px 12px; overflow-x: auto; white-space: nowrap;
+}
+.task { background: var(--mark); border: 1px solid var(--mark-edge); border-radius: 8px; padding: 12px 14px; }
+.task .eyebrow { color: var(--ink); opacity: .7; }
+.task p { margin: 4px 0 0; }
+details { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+details summary { cursor: pointer; padding: 8px 14px; font-weight: 500; font-size: 0.92rem; }
+details > div { padding: 0 14px 12px; font-size: 0.9rem; }
+
+.lesson-work { display: grid; gap: 14px; min-width: 0; }
+.lesson-work > * { min-width: 0; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.btn {
+  border: 1px solid var(--line); background: var(--surface); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 500;
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.primary:hover { filter: brightness(1.08); }
+.feedback { border-radius: 8px; padding: 12px 14px; display: grid; gap: 4px; font-size: 0.92rem; }
+.feedback.ok { background: var(--ok-soft); color: var(--ink); border: 1px solid var(--ok); }
+.feedback.ng { background: var(--ng-soft); color: var(--ink); border: 1px solid var(--ng); }
+.feedback b { font-size: 1rem; }
+.feedback ul { margin: 0; padding-left: 1.2em; }
+
+/* ---------- spreadsheet ---------- */
+.sheet { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; min-width: 0; }
+.fbar { display: flex; align-items: stretch; border-bottom: 1px solid var(--line); }
+.namebox {
+  width: 64px; flex: none; display: grid; place-items: center; font-family: var(--font-mono); font-size: 0.85rem;
+  border-right: 1px solid var(--line); background: var(--head);
+}
+.fx-label { flex: none; padding: 0 10px; display: grid; place-items: center; font-style: italic; color: var(--muted); font-family: Georgia, serif; border-right: 1px solid var(--line); }
+.finput {
+  flex: 1; min-width: 0; border: 0; background: transparent; padding: 9px 10px; font-family: var(--font-mono); font-size: 0.95rem; outline: none;
+}
+.finput:focus { background: var(--accent-soft); }
+.keys { display: flex; gap: 4px; flex-wrap: wrap; padding: 6px 8px; border-bottom: 1px solid var(--line); background: var(--head); }
+.keys button {
+  min-width: 34px; padding: 3px 8px; border: 1px solid var(--line); background: var(--surface); border-radius: 4px;
+  font-family: var(--font-mono); font-size: 0.85rem; cursor: pointer;
+}
+.keys button:hover { border-color: var(--accent); }
+.keys .sep { flex: 1; }
+.keys .wide { font-family: var(--font-body); font-weight: 500; }
+.grid-wrap { overflow: auto; max-height: 470px; outline: none; }
+.grid-wrap:focus-visible { box-shadow: inset 0 0 0 2px var(--accent); }
+table.grid { border-collapse: separate; border-spacing: 0; font-size: 0.9rem; user-select: none; -webkit-user-select: none; }
+.grid th, .grid td { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); height: 30px; padding: 0 8px; white-space: nowrap; }
+.grid thead th {
+  position: sticky; top: 0; z-index: 2; background: var(--head); font-weight: 500; color: var(--muted);
+  font-size: 0.78rem; min-width: 92px; text-align: center;
+}
+.grid thead th:first-child { left: 0; z-index: 3; min-width: 40px; }
+.grid tbody th {
+  position: sticky; left: 0; z-index: 1; background: var(--head); font-weight: 500; color: var(--muted);
+  font-size: 0.78rem; text-align: center; min-width: 40px; font-family: var(--font-mono);
+}
+.grid th.hl { color: var(--accent); background: var(--accent-soft); }
+.grid td { cursor: cell; position: relative; background: var(--surface); }
+.grid td.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 0.86rem; }
+.grid td.err { color: var(--ng); font-family: var(--font-mono); font-size: 0.82rem; }
+.grid td.target { background: var(--mark); }
+.grid td.target:empty::after { content: "?"; color: var(--mark-edge); font-weight: 700; }
+.grid td.hd { font-weight: 700; }
+.grid td.sel { box-shadow: inset 0 0 0 2px var(--accent); }
+.grid td.good { background: var(--ok-soft); box-shadow: inset 0 0 0 1px var(--ok); }
+.grid td.bad { background: var(--ng-soft); box-shadow: inset 0 0 0 1px var(--ng); }
+.grid td.sel.good, .grid td.sel.bad { box-shadow: inset 0 0 0 2px var(--accent); }
+.grid td.ref0 { outline: 2px dashed var(--r1); outline-offset: -3px; }
+.grid td.ref1 { outline: 2px dashed var(--r2); outline-offset: -3px; }
+.grid td.ref2 { outline: 2px dashed var(--r3); outline-offset: -3px; }
+.grid td.ref3 { outline: 2px dashed var(--r4); outline-offset: -3px; }
+.sheet-foot { padding: 6px 10px; font-size: 0.78rem; color: var(--muted); border-top: 1px solid var(--line); display: flex; gap: 6px 16px; flex-wrap: wrap; }
+.legend { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { display: inline-block; width: 12px; height: 12px; border: 1px solid var(--mark-edge); background: var(--mark); }
+
+/* ---------- quiz ---------- */
+.quiz { max-width: 640px; display: grid; gap: 18px; }
+.quiz-pick { display: flex; gap: 8px; flex-wrap: wrap; }
+.qcard { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 20px; display: grid; gap: 14px; }
+.qhead { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.qtext { font-size: 1.08rem; font-weight: 500; }
+.choices { display: grid; gap: 8px; }
+.choice {
+  text-align: left; padding: 10px 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); cursor: pointer;
+}
+.choice:hover:not(:disabled) { border-color: var(--accent); }
+.choice:disabled { cursor: default; }
+.choice.right { background: var(--ok-soft); border-color: var(--ok); }
+.choice.wrong { background: var(--ng-soft); border-color: var(--ng); }
+.qexp { font-size: 0.9rem; border-top: 1px dashed var(--line); padding-top: 12px; }
+.score { font-family: var(--font-display); font-size: 3rem; line-height: 1; font-weight: 400; }
+
+/* ---------- practice / reference ---------- */
+.page-head { display: grid; gap: 6px; margin-bottom: 18px; max-width: 46rem; }
+.page-head h1 { font-size: 1.5rem; }
+.page-head p { margin: 0; color: var(--muted); }
+.ref-table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 0.88rem; }
+.ref-table th, .ref-table td { border-bottom: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
+.ref-table thead th { background: var(--head); font-weight: 500; font-size: 0.8rem; color: var(--muted); }
+.ref-table td:first-child { font-family: var(--font-mono); font-weight: 600; white-space: nowrap; }
+.ref-table .mono { white-space: nowrap; }
+.ref-group { margin-top: 28px; display: grid; gap: 10px; }
+.ref-group h2 { font-size: 1.05rem; }
+.boxed { border: 1px solid var(--line); border-radius: 8px; overflow-x: auto; }
+kbd {
+  font-family: var(--font-mono); font-size: 0.82em; padding: 1px 6px; border: 1px solid var(--line); border-bottom-width: 2px;
+  border-radius: 4px; background: var(--surface); white-space: nowrap;
+}
+
+.toast {
+  position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  background: var(--ink); color: var(--bg); padding: 8px 16px; border-radius: 6px; font-size: 0.88rem; z-index: 50;
+  max-width: calc(100% - 32px);
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#lessons"><b>セル道場</b><span>Excel 初級・中級</span></a>
+    <nav class="nav" aria-label="メニュー">
+      <a href="#lessons" data-nav="lessons">レッスン</a>
+      <a href="#quiz" data-nav="quiz">確認クイズ</a>
+      <a href="#practice" data-nav="practice">自由練習</a>
+      <a href="#reference" data-nav="reference">関数一覧</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+"use strict";
+/* =====================================================================
+   数式エンジン
+   ===================================================================== */
+const ERR = c => ({ err: c });
+const isErr = v => v !== null && typeof v === "object" && "err" in v;
+
+const toHalf = s => s.replace(/[！-～]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0)).replace(/　/g, " ");
+
+// 引用符の外だけ半角に直す（日本語入力のまま打った「＝ＳＵＭ（」なども受け付ける）
+function normFormula(s) {
+  let out = "", q = false;
+  for (const ch of s) {
+    if ('"＂“”'.includes(ch)) { out += '"'; q = !q; continue; }
+    if (q) { out += ch; continue; }
+    out += ch === "、" ? "," : toHalf(ch);
+  }
+  return out;
+}
+
+const colNum = s => { let n = 0; for (const ch of s.toUpperCase()) n = n * 26 + ch.charCodeAt(0) - 64; return n; };
+const colName = n => { let s = ""; while (n > 0) { const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; };
+const addr = (c, r) => colName(c) + r;
+const parseAddr = a => { const m = /^\$?([A-Z]+)\$?(\d+)$/i.exec(a); return { c: colNum(m[1]), r: +m[2] }; };
+
+function literal(raw) {
+  const s = toHalf(String(raw)).trim();
+  if (s === "") return null;
+  if (/^[-+]?(\d{1,3}(,\d{3})+|\d+)(\.\d+)?$/.test(s)) return parseFloat(s.replace(/,/g, ""));
+  if (/^[-+]?\d*\.\d+$/.test(s)) return parseFloat(s);
+  if (/^[-+]?\d+(\.\d+)?%$/.test(s)) return parseFloat(s) / 100;
+  if (/^(true|false)$/i.test(s)) return s.toUpperCase() === "TRUE";
+  return String(raw);
+}
+
+function tokenize(s) {
+  const t = [];
+  let i = 0, m;
+  while (i < s.length) {
+    const c = s[i];
+    if (/\s/.test(c)) { i++; continue; }
+    if (c === '"') {
+      let j = i + 1, v = "";
+      for (;;) {
+        if (j >= s.length) throw ERR("#ERROR!");
+        if (s[j] === '"') { if (s[j + 1] === '"') { v += '"'; j += 2; continue; } break; }
+        v += s[j++];
+      }
+      t.push({ k: "str", v }); i = j + 1; continue;
+    }
+    const rest = s.slice(i);
+    if ((m = /^(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?/.exec(rest))) { t.push({ k: "num", v: parseFloat(m[0]) }); i += m[0].length; continue; }
+    if ((m = /^[A-Za-z_][A-Za-z0-9_.]*(?=\s*\()/.exec(rest))) { t.push({ k: "fn", v: m[0].toUpperCase() }); i += m[0].length; continue; }
+    if ((m = /^\$?[A-Za-z]{1,3}\$?\d+(?![A-Za-z0-9_])/.exec(rest))) { t.push({ k: "ref", v: m[0].toUpperCase().replace(/\$/g, "") }); i += m[0].length; continue; }
+    if ((m = /^(TRUE|FALSE)(?![A-Za-z0-9_])/i.exec(rest))) { t.push({ k: "bool", v: m[0].toUpperCase() === "TRUE" }); i += m[0].length; continue; }
+    if ((m = /^(<=|>=|<>|[-+*/^&=<>%:,()])/.exec(rest))) { t.push({ k: "op", v: m[0] }); i += m[0].length; continue; }
+    if ((m = /^[^\s"(),+\-*/^&=<>%:]+/.exec(rest))) { t.push({ k: "name", v: m[0] }); i += m[0].length; continue; }
+    throw ERR("#ERROR!");
+  }
+  return t;
+}
+
+function parse(tokens) {
+  let p = 0;
+  const peek = () => tokens[p];
+  const isOp = v => peek() && peek().k === "op" && peek().v === v;
+  const expect = v => { if (!isOp(v)) throw ERR("#ERROR!"); p++; };
+  const CMP = ["=", "<>", "<", ">", "<=", ">="];
+  function cmp() { let a = cat(); while (peek() && peek().k === "op" && CMP.includes(peek().v)) { const op = tokens[p++].v; a = { t: "bin", op, a, b: cat() }; } return a; }
+  function cat() { let a = add(); while (isOp("&")) { p++; a = { t: "bin", op: "&", a, b: add() }; } return a; }
+  function add() { let a = mul(); while (isOp("+") || isOp("-")) { const op = tokens[p++].v; a = { t: "bin", op, a, b: mul() }; } return a; }
+  function mul() { let a = pow(); while (isOp("*") || isOp("/")) { const op = tokens[p++].v; a = { t: "bin", op, a, b: pow() }; } return a; }
+  function pow() { let a = unary(); while (isOp("^")) { p++; a = { t: "bin", op: "^", a, b: unary() }; } return a; }
+  function unary() { if (isOp("-")) { p++; return { t: "neg", a: unary() }; } if (isOp("+")) { p++; return unary(); } return postfix(); }
+  function postfix() { let a = primary(); while (isOp("%")) { p++; a = { t: "pct", a }; } return a; }
+  function primary() {
+    const tk = tokens[p++];
+    if (!tk) throw ERR("#ERROR!");
+    if (tk.k === "num" || tk.k === "str" || tk.k === "bool") return { t: tk.k, v: tk.v };
+    if (tk.k === "name") return { t: "name", v: tk.v };
+    if (tk.k === "ref") {
+      const a = parseAddr(tk.v);
+      if (isOp(":")) {
+        p++;
+        const t2 = tokens[p++];
+        if (!t2 || t2.k !== "ref") throw ERR("#ERROR!");
+        const b = parseAddr(t2.v);
+        return { t: "range", c1: Math.min(a.c, b.c), r1: Math.min(a.r, b.r), c2: Math.max(a.c, b.c), r2: Math.max(a.r, b.r) };
+      }
+      return { t: "ref", ref: tk.v };
+    }
+    if (tk.k === "fn") {
+      expect("(");
+      const args = [];
+      if (!isOp(")")) {
+        for (;;) {
+          if (isOp(",") || isOp(")")) args.push({ t: "empty" }); else args.push(cmp());
+          if (isOp(",")) { p++; continue; }
+          break;
+        }
+      }
+      expect(")");
+      return { t: "fn", name: tk.v, args };
+    }
+    if (tk.k === "op" && tk.v === "(") { const e = cmp(); expect(")"); return e; }
+    throw ERR("#ERROR!");
+  }
+  const e = cmp();
+  if (p < tokens.length) throw ERR("#ERROR!");
+  return e;
+}
+
+const astCache = new Map();
+function parseCached(src) {
+  if (!astCache.has(src)) {
+    try { astCache.set(src, parse(tokenize(src))); } catch (e) { astCache.set(src, e); }
+  }
+  const r = astCache.get(src);
+  if (isErr(r)) throw r;
+  return r;
+}
+
+function fmtNum(n) {
+  if (Number.isInteger(n)) return String(n);
+  return String(parseFloat(n.toPrecision(15)));
+}
+function num(v) {
+  if (v === null) return 0;
+  if (typeof v === "number") { if (!isFinite(v)) throw ERR("#NUM!"); return v; }
+  if (typeof v === "boolean") return v ? 1 : 0;
+  if (isErr(v)) throw v;
+  const l = literal(v);
+  if (typeof l === "number") return l;
+  throw ERR("#VALUE!");
+}
+function str(v) {
+  if (v === null) return "";
+  if (typeof v === "boolean") return v ? "TRUE" : "FALSE";
+  if (typeof v === "number") return fmtNum(v);
+  if (isErr(v)) throw v;
+  return v;
+}
+function bool(v) {
+  if (v === null) return false;
+  if (typeof v === "boolean") return v;
+  if (typeof v === "number") return v !== 0;
+  if (isErr(v)) throw v;
+  const s = v.trim().toUpperCase();
+  if (s === "TRUE") return true;
+  if (s === "FALSE") return false;
+  throw ERR("#VALUE!");
+}
+const rank = v => typeof v === "number" ? 0 : typeof v === "string" ? 1 : 2;
+function cmpVals(a, b) {
+  if (a === null) a = typeof b === "string" ? "" : typeof b === "boolean" ? false : 0;
+  if (b === null) b = typeof a === "string" ? "" : typeof a === "boolean" ? false : 0;
+  const ra = rank(a), rb = rank(b);
+  if (ra !== rb) return ra < rb ? -1 : 1;
+  if (ra === 1) { a = a.toLowerCase(); b = b.toLowerCase(); }
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+const sameType = (a, b) => a !== null && b !== null && rank(a) === rank(b);
+
+function wildRe(s) {
+  const body = s.replace(/[.+^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*").replace(/\?/g, ".");
+  return new RegExp("^" + body + "$", "is");
+}
+function eqLookup(cell, v) {
+  if (cell === null || isErr(cell)) return false;
+  if (typeof v === "string" && typeof cell === "string") return /[*?]/.test(v) ? wildRe(v).test(cell) : cell.toLowerCase() === v.toLowerCase();
+  return sameType(cell, v) && cmpVals(cell, v) === 0;
+}
+function makeCrit(c) {
+  if (typeof c === "number") return v => (typeof v === "number" && v === c) || (typeof v === "string" && literal(v) === c);
+  if (typeof c === "boolean") return v => v === c;
+  let s = c === null ? "" : String(c), op = "=";
+  const m = /^(<=|>=|<>|<|>|=)/.exec(s);
+  if (m) { op = m[1]; s = s.slice(op.length); }
+  const n = literal(s);
+  const test = (x, y) => op === "=" ? x === y : op === "<>" ? x !== y : op === "<" ? x < y : op === ">" ? x > y : op === "<=" ? x <= y : x >= y;
+  if (typeof n === "number") return v => typeof v === "number" ? test(v, n) : op === "<>";
+  if (op === "=" || op === "<>") {
+    if (s === "") return op === "=" ? v => v === null || v === "" : v => !(v === null || v === "");
+    const re = wildRe(s);
+    const f = v => typeof v === "string" && re.test(v);
+    return op === "=" ? f : v => !f(v);
+  }
+  const ls = s.toLowerCase();
+  return v => typeof v === "string" && test(v.toLowerCase(), ls);
+}
+
+class Engine {
+  constructor(cells) { this.cells = cells; this.cache = new Map(); this.stack = new Set(); }
+  value(ref) {
+    if (this.cache.has(ref)) return this.cache.get(ref);
+    const raw = this.cells[ref];
+    let v;
+    if (raw == null || raw === "") v = null;
+    else if (raw[0] === "=") {
+      if (this.stack.has(ref)) return ERR("#CIRC!");
+      this.stack.add(ref);
+      v = this.formula(raw.slice(1));
+      this.stack.delete(ref);
+      if (v === null) v = 0;
+    } else v = literal(raw);
+    this.cache.set(ref, v);
+    return v;
+  }
+  formula(src) {
+    try {
+      let r = evalNode(parseCached(src), this);
+      if (r && r.rng) r = r.rng.length === 1 && r.rng[0].length === 1 ? r.rng[0][0] : ERR("#VALUE!");
+      return r;
+    } catch (e) {
+      if (isErr(e)) return e;
+      console.error(e);
+      return ERR("#ERROR!");
+    }
+  }
+  range(n) {
+    const out = [];
+    for (let r = n.r1; r <= n.r2; r++) {
+      const row = [];
+      for (let c = n.c1; c <= n.c2; c++) row.push(this.value(addr(c, r)));
+      out.push(row);
+    }
+    return out;
+  }
+}
+
+function sc(v) {
+  if (v && v.rng) {
+    if (v.rng.length === 1 && v.rng[0].length === 1) v = v.rng[0][0];
+    else throw ERR("#VALUE!");
+  }
+  if (isErr(v)) throw v;
+  return v;
+}
+function evalNode(n, eng) {
+  switch (n.t) {
+    case "num": case "str": case "bool": return n.v;
+    case "empty": return null;
+    case "name": throw ERR("#NAME?");
+    case "ref": { const v = eng.value(n.ref); if (isErr(v)) throw v; return v; }
+    case "range": return { rng: eng.range(n) };
+    case "neg": return -num(sc(evalNode(n.a, eng)));
+    case "pct": return num(sc(evalNode(n.a, eng))) / 100;
+    case "fn": { const f = FN[n.name]; if (!f) throw ERR("#NAME?"); return f(n.args, eng); }
+    case "bin": {
+      const a = sc(evalNode(n.a, eng)), b = sc(evalNode(n.b, eng));
+      switch (n.op) {
+        case "+": return num(a) + num(b);
+        case "-": return num(a) - num(b);
+        case "*": return num(a) * num(b);
+        case "/": { const d = num(b); if (d === 0) throw ERR("#DIV/0!"); return num(a) / d; }
+        case "^": return Math.pow(num(a), num(b));
+        case "&": return str(a) + str(b);
+        default: {
+          const c = cmpVals(a, b);
+          return { "=": c === 0, "<>": c !== 0, "<": c < 0, ">": c > 0, "<=": c <= 0, ">=": c >= 0 }[n.op];
+        }
+      }
+    }
+  }
+  throw ERR("#ERROR!");
+}
+
+/* ---- 関数の実装 ---- */
+const E = (n, eng) => sc(evalNode(n, eng));
+const has = (args, i) => args[i] && args[i].t !== "empty";
+const opt = (args, i, eng, d) => has(args, i) ? E(args[i], eng) : d;
+function grid(n, eng) {
+  if (n.t === "ref") return [[eng.value(n.ref)]];
+  const v = evalNode(n, eng);
+  return v && v.rng ? v.rng : [[v]];
+}
+const flat = (n, eng) => grid(n, eng).flat();
+const isRefArg = n => n.t === "ref" || n.t === "range";
+function nums(args, eng) {
+  const out = [];
+  for (const a of args) {
+    if (a.t === "empty") continue;
+    const v = isRefArg(a) ? { rng: grid(a, eng) } : evalNode(a, eng);
+    if (v && v.rng) { for (const x of v.rng.flat()) { if (isErr(x)) throw x; if (typeof x === "number") out.push(x); } }
+    else if (v !== null) out.push(num(v));
+  }
+  return out;
+}
+function roundX(x, d, mode) {
+  const m = Math.pow(10, d), a = parseFloat((Math.abs(x) * m).toPrecision(15));
+  const r = mode === "up" ? Math.ceil(a) : mode === "down" ? Math.floor(a) : Math.round(a);
+  return Math.sign(x) * r / m;
+}
+function lookupIndex(arr, v, mode) {
+  if (mode === 0) return arr.findIndex(x => eqLookup(x, v));
+  let idx = -1;
+  for (let i = 0; i < arr.length; i++) {
+    if (!sameType(arr[i], v)) continue;
+    const c = cmpVals(arr[i], v);
+    if (mode === 1) { if (c <= 0) idx = i; else break; }
+    else { if (c >= 0) idx = i; else break; }
+  }
+  return idx;
+}
+function ifsLoop(args, eng, startPairs, cb) {
+  const ranges = [], crits = [];
+  for (let i = startPairs; i + 1 < args.length; i += 2) { ranges.push(flat(args[i], eng)); crits.push(makeCrit(E(args[i + 1], eng))); }
+  if (!ranges.length) throw ERR("#VALUE!");
+  for (let i = 0; i < ranges[0].length; i++) if (ranges.every((r, k) => crits[k](r[i]))) cb(i);
+}
+function textFmt(v, f) {
+  const n = num(v);
+  const m = /[#0,.]+%?/.exec(f);
+  if (!m) return f;
+  const pat = m[0], pct = pat.endsWith("%"), core = pat.replace("%", "");
+  const dec = (core.split(".")[1] || "").length;
+  const x = roundX(pct ? n * 100 : n, dec);
+  const s = core.includes(",") ? x.toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec }) : x.toFixed(dec);
+  return f.replace(pat, s + (pct ? "%" : ""));
+}
+
+const FN = {
+  SUM: (a, e) => nums(a, e).reduce((s, x) => s + x, 0),
+  AVERAGE: (a, e) => { const n = nums(a, e); if (!n.length) throw ERR("#DIV/0!"); return n.reduce((s, x) => s + x, 0) / n.length; },
+  MAX: (a, e) => { const n = nums(a, e); return n.length ? Math.max(...n) : 0; },
+  MIN: (a, e) => { const n = nums(a, e); return n.length ? Math.min(...n) : 0; },
+  PRODUCT: (a, e) => nums(a, e).reduce((s, x) => s * x, 1),
+  MEDIAN: (a, e) => { const n = nums(a, e).sort((x, y) => x - y); if (!n.length) throw ERR("#NUM!"); const h = n.length >> 1; return n.length % 2 ? n[h] : (n[h - 1] + n[h]) / 2; },
+  COUNT: (a, e) => a.reduce((s, n) => s + (isRefArg(n) ? flat(n, e).filter(v => typeof v === "number").length : (() => { try { num(E(n, e)); return 1; } catch (_) { return 0; } })()), 0),
+  COUNTA: (a, e) => a.reduce((s, n) => s + (isRefArg(n) ? flat(n, e).filter(v => v !== null && v !== "").length : 1), 0),
+  COUNTBLANK: (a, e) => flat(a[0], e).filter(v => v === null || v === "").length,
+  ROUND: (a, e) => roundX(num(E(a[0], e)), num(opt(a, 1, e, 0))),
+  ROUNDUP: (a, e) => roundX(num(E(a[0], e)), num(opt(a, 1, e, 0)), "up"),
+  ROUNDDOWN: (a, e) => roundX(num(E(a[0], e)), num(opt(a, 1, e, 0)), "down"),
+  INT: (a, e) => Math.floor(num(E(a[0], e))),
+  ABS: (a, e) => Math.abs(num(E(a[0], e))),
+  SQRT: (a, e) => { const x = num(E(a[0], e)); if (x < 0) throw ERR("#NUM!"); return Math.sqrt(x); },
+  POWER: (a, e) => Math.pow(num(E(a[0], e)), num(E(a[1], e))),
+  MOD: (a, e) => { const x = num(E(a[0], e)), d = num(E(a[1], e)); if (d === 0) throw ERR("#DIV/0!"); return x - d * Math.floor(x / d); },
+  IF: (a, e) => {
+    if (bool(E(a[0], e))) return a.length > 1 ? (has(a, 1) ? E(a[1], e) : 0) : true;
+    return a.length > 2 ? (has(a, 2) ? E(a[2], e) : 0) : false;
+  },
+  IFS: (a, e) => { for (let i = 0; i + 1 < a.length; i += 2) if (bool(E(a[i], e))) return E(a[i + 1], e); throw ERR("#N/A"); },
+  AND: (a, e) => a.every(n => isRefArg(n) ? flat(n, e).filter(v => v !== null && typeof v !== "string").every(bool) : bool(E(n, e))),
+  OR: (a, e) => a.some(n => isRefArg(n) ? flat(n, e).filter(v => v !== null && typeof v !== "string").some(bool) : bool(E(n, e))),
+  NOT: (a, e) => !bool(E(a[0], e)),
+  IFERROR: (a, e) => { try { return E(a[0], e); } catch (x) { if (isErr(x)) return E(a[1], e); throw x; } },
+  IFNA: (a, e) => { try { return E(a[0], e); } catch (x) { if (isErr(x) && x.err === "#N/A") return E(a[1], e); throw x; } },
+  COUNTIF: (a, e) => { const f = makeCrit(E(a[1], e)); return flat(a[0], e).filter(v => !isErr(v) && f(v)).length; },
+  SUMIF: (a, e) => {
+    const r = flat(a[0], e), s = has(a, 2) ? flat(a[2], e) : r, f = makeCrit(E(a[1], e));
+    let t = 0; r.forEach((v, i) => { if (!isErr(v) && f(v) && typeof s[i] === "number") t += s[i]; }); return t;
+  },
+  AVERAGEIF: (a, e) => {
+    const r = flat(a[0], e), s = has(a, 2) ? flat(a[2], e) : r, f = makeCrit(E(a[1], e));
+    let t = 0, n = 0; r.forEach((v, i) => { if (!isErr(v) && f(v) && typeof s[i] === "number") { t += s[i]; n++; } });
+    if (!n) throw ERR("#DIV/0!"); return t / n;
+  },
+  COUNTIFS: (a, e) => { let n = 0; ifsLoop(a, e, 0, () => n++); return n; },
+  SUMIFS: (a, e) => { const s = flat(a[0], e); let t = 0; ifsLoop(a, e, 1, i => { if (typeof s[i] === "number") t += s[i]; }); return t; },
+  AVERAGEIFS: (a, e) => { const s = flat(a[0], e); let t = 0, n = 0; ifsLoop(a, e, 1, i => { if (typeof s[i] === "number") { t += s[i]; n++; } }); if (!n) throw ERR("#DIV/0!"); return t / n; },
+  VLOOKUP: (a, e) => {
+    const v = E(a[0], e), g = grid(a[1], e), col = Math.trunc(num(E(a[2], e)));
+    const approx = has(a, 3) ? bool(E(a[3], e)) : true;
+    if (col < 1) throw ERR("#VALUE!");
+    if (col > g[0].length) throw ERR("#REF!");
+    const i = lookupIndex(g.map(r => r[0]), v, approx ? 1 : 0);
+    if (i < 0) throw ERR("#N/A");
+    const out = g[i][col - 1]; if (isErr(out)) throw out; return out;
+  },
+  HLOOKUP: (a, e) => {
+    const v = E(a[0], e), g = grid(a[1], e), row = Math.trunc(num(E(a[2], e)));
+    const approx = has(a, 3) ? bool(E(a[3], e)) : true;
+    if (row < 1) throw ERR("#VALUE!");
+    if (row > g.length) throw ERR("#REF!");
+    const i = lookupIndex(g[0], v, approx ? 1 : 0);
+    if (i < 0) throw ERR("#N/A");
+    const out = g[row - 1][i]; if (isErr(out)) throw out; return out;
+  },
+  MATCH: (a, e) => {
+    const v = E(a[0], e), arr = flat(a[1], e), t = Math.sign(num(opt(a, 2, e, 1)));
+    const i = lookupIndex(arr, v, t);
+    if (i < 0) throw ERR("#N/A");
+    return i + 1;
+  },
+  INDEX: (a, e) => {
+    const g = grid(a[0], e);
+    let r = Math.trunc(num(E(a[1], e))), c = has(a, 2) ? Math.trunc(num(E(a[2], e))) : null;
+    if (c === null) { if (g.length === 1) { c = r; r = 1; } else c = 1; }
+    if (r < 1 || c < 1 || r > g.length || c > g[0].length) throw ERR("#REF!");
+    const out = g[r - 1][c - 1]; if (isErr(out)) throw out; return out;
+  },
+  XLOOKUP: (a, e) => {
+    const v = E(a[0], e), lg = grid(a[1], e), rg = grid(a[2], e);
+    const vertical = lg[0].length === 1;
+    const i = (vertical ? lg.map(r => r[0]) : lg[0]).findIndex(x => eqLookup(x, v));
+    if (i < 0) { if (has(a, 3)) return E(a[3], e); throw ERR("#N/A"); }
+    const out = vertical ? (rg[i] && rg[i].length === 1 ? rg[i][0] : { rng: [rg[i] || []] }) : (rg.length === 1 ? rg[0][i] : { rng: rg.map(r => [r[i]]) });
+    if (isErr(out)) throw out; return out === undefined ? (() => { throw ERR("#REF!"); })() : out;
+  },
+  LEFT: (a, e) => { const n = num(opt(a, 1, e, 1)); if (n < 0) throw ERR("#VALUE!"); return Array.from(str(E(a[0], e))).slice(0, n).join(""); },
+  RIGHT: (a, e) => { const n = num(opt(a, 1, e, 1)); if (n < 0) throw ERR("#VALUE!"); const s = Array.from(str(E(a[0], e))); return n === 0 ? "" : s.slice(-n).join(""); },
+  MID: (a, e) => { const s = Array.from(str(E(a[0], e))), st = num(E(a[1], e)), n = num(E(a[2], e)); if (st < 1 || n < 0) throw ERR("#VALUE!"); return s.slice(st - 1, st - 1 + n).join(""); },
+  LEN: (a, e) => Array.from(str(E(a[0], e))).length,
+  UPPER: (a, e) => str(E(a[0], e)).toUpperCase(),
+  LOWER: (a, e) => str(E(a[0], e)).toLowerCase(),
+  TRIM: (a, e) => str(E(a[0], e)).replace(/[ 　]+/g, " ").trim(),
+  SUBSTITUTE: (a, e) => str(E(a[0], e)).split(str(E(a[1], e))).join(str(E(a[2], e))),
+  REPT: (a, e) => str(E(a[0], e)).repeat(Math.max(0, Math.trunc(num(E(a[1], e))))),
+  CONCAT: (a, e) => a.map(n => flat(n, e).map(str).join("")).join(""),
+  CONCATENATE: (a, e) => a.map(n => str(E(n, e))).join(""),
+  TEXTJOIN: (a, e) => { const d = str(E(a[0], e)), skip = bool(E(a[1], e)); return a.slice(2).flatMap(n => flat(n, e).map(str)).filter(s => !(skip && s === "")).join(d); },
+  TEXT: (a, e) => textFmt(E(a[0], e), str(E(a[1], e))),
+  VALUE: (a, e) => num(E(a[0], e)),
+  LARGE: (a, e) => { const n = nums([a[0]], e).sort((x, y) => y - x), k = num(E(a[1], e)); if (k < 1 || k > n.length) throw ERR("#NUM!"); return n[k - 1]; },
+  SMALL: (a, e) => { const n = nums([a[0]], e).sort((x, y) => x - y), k = num(E(a[1], e)); if (k < 1 || k > n.length) throw ERR("#NUM!"); return n[k - 1]; },
+  RANK: (a, e) => {
+    const v = num(E(a[0], e)), n = nums([a[1]], e), asc = has(a, 2) && num(E(a[2], e)) !== 0;
+    if (!n.includes(v)) throw ERR("#N/A");
+    return 1 + n.filter(x => asc ? x < v : x > v).length;
+  },
+};
+FN["RANK.EQ"] = FN.RANK;
+
+// コピー時の参照のずれ（$ が付いた部分は固定）
+function shiftFormula(raw, dr, dc) {
+  if (!raw || raw[0] !== "=") return raw;
+  return raw.split('"').map((seg, i) => i % 2 ? seg : seg.replace(
+    /(^|[^A-Za-z0-9_$.])(\$?)([A-Za-z]{1,3})(\$?)(\d+)(?![A-Za-z0-9_(])/g,
+    (m, pre, d1, col, d2, row) => {
+      let c = colNum(col), r = +row;
+      if (!d1) c += dc;
+      if (!d2) r += dr;
+      if (c < 1 || r < 1) return pre + "#REF!";
+      return pre + d1 + colName(c) + d2 + r;
+    })).join('"');
+}
+
+function display(v) {
+  if (v === null) return "";
+  if (isErr(v)) return v.err;
+  if (typeof v === "boolean") return v ? "TRUE" : "FALSE";
+  if (typeof v === "number") {
+    if (Number.isInteger(v)) return String(v);
+    return String(parseFloat(v.toPrecision(10)));
+  }
+  return v;
+}
+function sameValue(a, b) {
+  if (typeof a === "number" && typeof b === "number") return Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(b));
+  if (isErr(a) && isErr(b)) return a.err === b.err;
+  if (typeof a === "string" && typeof b === "string") return a.trim() === b.trim();
+  return a === b;
+}
+
+/* =====================================================================
+   シート UI
+   ===================================================================== */
+const REF_RE = /(^|[^A-Za-z0-9_$.])(\$?[A-Za-z]{1,3}\$?\d+)(?::(\$?[A-Za-z]{1,3}\$?\d+))?(?![A-Za-z0-9_(])/g;
+
+class SheetUI {
+  constructor(root, id, opts = {}) {
+    this.root = root; this.id = id; this.opts = opts;
+    this.cells = {}; this.targets = new Set(); this.headers = new Set(); this.marks = {};
+    this.sel = "A1"; this.dirty = false; this.ins = null; this.drag = false; this.clip = null;
+    root.innerHTML = `
+      <div class="sheet">
+        <div class="fbar">
+          <div class="namebox" aria-label="選択中のセル">A1</div>
+          <div class="fx-label" aria-hidden="true">fx</div>
+          <input class="finput" id="${id}-input" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="数式バー">
+        </div>
+        <div class="keys" aria-label="入力補助">
+          ${["=", "(", ")", ":", ",", '"', "&", "*", "/", ">=", "<>"].map(k => `<button type="button" data-ins='${k}'>${k}</button>`).join("")}
+          <button type="button" class="wide" data-act="f4" title="参照の $ を切り替え（F4）">$ 切替</button>
+          <span class="sep"></span>
+          <button type="button" class="wide" data-act="fill" title="選択中のセルの数式を下の行へコピー">下へコピー ↓</button>
+        </div>
+        <div class="grid-wrap" tabindex="0" aria-label="ワークシート"><table class="grid"></table></div>
+        <div class="sheet-foot">
+          <span class="legend"><i></i>黄色のセルに入力</span>
+          <span>数式は「=」から。入力中にセルをクリックすると番地が入ります</span>
+        </div>
+      </div>`;
+    this.input = root.querySelector(".finput");
+    this.namebox = root.querySelector(".namebox");
+    this.wrapEl = root.querySelector(".grid-wrap");
+    this.table = root.querySelector("table");
+    this.bind();
+  }
+
+  load({ data = [], cols = 6, rows, targets = [], headers = true, sel }) {
+    this.cells = {};
+    data.forEach((row, r) => row.forEach((v, c) => { if (v !== "" && v != null) this.cells[addr(c + 1, r + 1)] = String(v); }));
+    this.targets = new Set(targets);
+    this.headers = new Set();
+    if (headers) (data[0] || []).forEach((v, c) => { if (v !== "" && typeof v === "string") this.headers.add(addr(c + 1, 1)); });
+    this.cols = Math.max(cols, ...data.map(r => r.length));
+    this.rows = rows || data.length + 2;
+    this.marks = {};
+    this.build();
+    this.select(sel || [...this.targets][0] || "A1");
+  }
+  setCells(cells) { this.cells = { ...cells }; this.render(); this.select(this.sel); }
+
+  build() {
+    let h = "<thead><tr><th></th>";
+    for (let c = 1; c <= this.cols; c++) h += `<th data-col="${c}">${colName(c)}</th>`;
+    h += "</tr></thead><tbody>";
+    for (let r = 1; r <= this.rows; r++) {
+      h += `<tr><th data-row="${r}">${r}</th>`;
+      for (let c = 1; c <= this.cols; c++) h += `<td data-ref="${addr(c, r)}"></td>`;
+      h += "</tr>";
+    }
+    this.table.innerHTML = h + "</tbody>";
+    this.tds = {};
+    this.table.querySelectorAll("td").forEach(td => this.tds[td.dataset.ref] = td);
+    this.render();
+  }
+
+  engine() { return new Engine(this.cells); }
+  render() {
+    const eng = this.engine();
+    for (const ref in this.tds) {
+      const td = this.tds[ref], v = eng.value(ref);
+      td.textContent = display(v);
+      td.className = "";
+      if (typeof v === "number") td.classList.add("num");
+      if (isErr(v)) td.classList.add("err");
+      if (this.targets.has(ref)) td.classList.add("target");
+      if (this.headers.has(ref)) td.classList.add("hd");
+      if (this.marks[ref]) td.classList.add(this.marks[ref]);
+      if (ref === this.sel) td.classList.add("sel");
+    }
+    this.highlightRefs();
+  }
+
+  select(ref, focusGrid) {
+    const old = this.tds[this.sel];
+    if (old) old.classList.remove("sel");
+    this.sel = ref;
+    const td = this.tds[ref];
+    if (td) { td.classList.add("sel"); td.scrollIntoView({ block: "nearest", inline: "nearest" }); }
+    const { c, r } = parseAddr(ref);
+    this.table.querySelectorAll("th.hl").forEach(th => th.classList.remove("hl"));
+    const ch = this.table.querySelector(`th[data-col="${c}"]`), rh = this.table.querySelector(`th[data-row="${r}"]`);
+    if (ch) ch.classList.add("hl");
+    if (rh) rh.classList.add("hl");
+    this.namebox.textContent = ref;
+    this.input.value = this.cells[ref] || "";
+    this.dirty = false; this.ins = null;
+    this.highlightRefs();
+    if (focusGrid) this.wrapEl.focus({ preventScroll: true });
+  }
+
+  commit() {
+    if (!this.dirty) return;
+    let raw = this.input.value;
+    if (/^[=＝]/.test(raw)) raw = "=" + normFormula(raw.slice(1)).trim();
+    if (raw.trim() === "") delete this.cells[this.sel]; else this.cells[this.sel] = raw;
+    this.dirty = false; this.ins = null;
+    this.marks = {};
+    this.render();
+    if (this.opts.onChange) this.opts.onChange();
+  }
+  move(dr, dc) {
+    const { c, r } = parseAddr(this.sel);
+    const nc = Math.min(this.cols, Math.max(1, c + dc)), nr = Math.min(this.rows, Math.max(1, r + dr));
+    this.select(addr(nc, nr), true);
+  }
+  edit(text) {
+    if (text !== undefined) { this.input.value = text; this.dirty = true; }
+    this.input.focus();
+    const n = this.input.value.length;
+    this.input.setSelectionRange(n, n);
+    this.highlightRefs();
+  }
+
+  formulaMode() {
+    const v = this.input.value;
+    if (document.activeElement !== this.input || !/^[=＝]/.test(v)) return false;
+    const s = this.input.selectionStart;
+    if (this.ins && this.ins.value === v && s === this.ins.end) return true;
+    return /[=＝(（,，、+\-*/&:<>^\s]$/.test(v.slice(0, s));
+  }
+  insertRef(ref, anchor) {
+    const v = this.input.value;
+    let s = this.input.selectionStart, e = this.input.selectionEnd;
+    if (this.ins && this.ins.value === v && s === this.ins.end) { s = this.ins.start; e = this.ins.end; }
+    let txt = ref;
+    if (anchor && anchor !== ref) {
+      const a = parseAddr(anchor), b = parseAddr(ref);
+      txt = addr(Math.min(a.c, b.c), Math.min(a.r, b.r)) + ":" + addr(Math.max(a.c, b.c), Math.max(a.r, b.r));
+    }
+    this.input.value = v.slice(0, s) + txt + v.slice(e);
+    const end = s + txt.length;
+    this.input.setSelectionRange(end, end);
+    this.ins = { start: s, end, value: this.input.value, anchor: anchor || ref };
+    this.dirty = true;
+    this.highlightRefs();
+  }
+  toggleAbs() {
+    const v = this.input.value, caret = this.input.selectionStart ?? v.length;
+    const re = /\$?[A-Za-z]{1,3}\$?\d+(?![A-Za-z0-9_(])/g;
+    let m, best = null;
+    while ((m = re.exec(v))) { if (m.index <= caret) best = m; }
+    if (!best || !v.startsWith("=")) { toast("数式の中のセル番地にカーソルを置いてから押してください"); return; }
+    const [, d1, col, d2, row] = /^(\$?)([A-Za-z]+)(\$?)(\d+)$/.exec(best[0]);
+    const state = (d1 ? 2 : 0) + (d2 ? 1 : 0);
+    const next = { 0: "$C$R", 3: "C$R", 1: "$CR", 2: "CR" }[state];
+    const rep = next.replace("C", col.toUpperCase()).replace("R", row);
+    this.input.value = v.slice(0, best.index) + rep + v.slice(best.index + best[0].length);
+    const end = best.index + rep.length;
+    this.input.focus();
+    this.input.setSelectionRange(end, end);
+    this.dirty = true; this.ins = null;
+  }
+  fillDown() {
+    this.commit();
+    const raw = this.cells[this.sel];
+    if (!raw) { toast("コピーする数式が入ったセルを選んでください"); return; }
+    const { c, r } = parseAddr(this.sel);
+    const eng = this.engine();
+    const filled = cc => { let end = r; while (end + 1 <= this.rows && cc >= 1 && cc <= this.cols && eng.value(addr(cc, end + 1)) !== null) end++; return end; };
+    let end = filled(c - 1);
+    if (end === r) end = filled(c + 1);
+    if (end === r) { toast("隣の列にデータがある行までコピーします。下に続くデータがありません"); return; }
+    for (let rr = r + 1; rr <= end; rr++) this.cells[addr(c, rr)] = shiftFormula(raw, rr - r, 0);
+    this.marks = {};
+    this.render();
+    toast(`${this.sel} を ${addr(c, r + 1)}〜${addr(c, end)} にコピーしました`);
+    if (this.opts.onChange) this.opts.onChange();
+  }
+
+  highlightRefs() {
+    for (const ref in this.tds) this.tds[ref].classList.remove("ref0", "ref1", "ref2", "ref3");
+    const v = this.input.value;
+    if (!v.startsWith("=") && !v.startsWith("＝")) return;
+    const src = normFormula(v.slice(1)).split('"').filter((_, i) => i % 2 === 0).join(" ");
+    let m, k = 0;
+    REF_RE.lastIndex = 0;
+    while ((m = REF_RE.exec(src))) {
+      const a = parseAddr(m[2]), b = m[3] ? parseAddr(m[3]) : a;
+      for (let r = Math.min(a.r, b.r); r <= Math.max(a.r, b.r); r++)
+        for (let c = Math.min(a.c, b.c); c <= Math.max(a.c, b.c); c++) {
+          const td = this.tds[addr(c, r)];
+          if (td) td.classList.add("ref" + (k % 4));
+        }
+      k++;
+    }
+  }
+
+  bind() {
+    const tdAt = (x, y) => { const el = document.elementFromPoint(x, y); return el && el.closest && el.closest("td[data-ref]"); };
+    this.table.addEventListener("pointerdown", ev => {
+      const td = ev.target.closest("td[data-ref]");
+      if (!td) return;
+      if (this.formulaMode() || (this.ins && document.activeElement === this.input && this.ins.value === this.input.value)) {
+        ev.preventDefault();
+        this.insertRef(td.dataset.ref);
+        this.drag = ev.pointerType === "mouse";
+        this.skipClick = true;
+      }
+    });
+    this.table.addEventListener("mousedown", ev => { if (this.skipClick) ev.preventDefault(); });
+    this.table.addEventListener("pointermove", ev => {
+      if (!this.drag || !this.ins) return;
+      const td = tdAt(ev.clientX, ev.clientY);
+      if (td) this.insertRef(td.dataset.ref, this.ins.anchor);
+    });
+    window.addEventListener("pointerup", () => { this.drag = false; });
+    this.table.addEventListener("click", ev => {
+      const td = ev.target.closest("td[data-ref]");
+      if (!td) return;
+      if (this.skipClick) { this.skipClick = false; this.input.focus(); return; }
+      const ref = td.dataset.ref;
+      if (ref === this.sel && this.lastClick === ref) { this.edit(); return; }
+      this.commit();
+      this.select(ref, true);
+      this.lastClick = ref;
+    });
+    this.table.addEventListener("dblclick", ev => { const td = ev.target.closest("td[data-ref]"); if (td) this.edit(); });
+
+    this.input.addEventListener("input", () => { this.dirty = true; this.highlightRefs(); });
+    this.input.addEventListener("focus", () => { this.lastClick = null; });
+    this.input.addEventListener("blur", () => { this.commit(); });
+    this.input.addEventListener("keydown", ev => {
+      if (ev.isComposing) return;
+      if (ev.key === "Enter") { ev.preventDefault(); this.commit(); this.move(ev.shiftKey ? -1 : 1, 0); }
+      else if (ev.key === "Tab") { ev.preventDefault(); this.commit(); this.move(0, ev.shiftKey ? -1 : 1); }
+      else if (ev.key === "Escape") { ev.preventDefault(); this.dirty = false; this.select(this.sel, true); }
+      else if (ev.key === "F4") { ev.preventDefault(); this.toggleAbs(); }
+    });
+
+    this.wrapEl.addEventListener("keydown", ev => {
+      if (ev.target !== this.wrapEl) return;
+      const k = ev.key, mod = ev.ctrlKey || ev.metaKey;
+      const arrows = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
+      if (arrows[k]) { ev.preventDefault(); this.move(...arrows[k]); }
+      else if (k === "Enter") { ev.preventDefault(); this.move(ev.shiftKey ? -1 : 1, 0); }
+      else if (k === "Tab") { ev.preventDefault(); this.move(0, ev.shiftKey ? -1 : 1); }
+      else if (k === "F2") { ev.preventDefault(); this.edit(); }
+      else if (k === "Delete" || k === "Backspace") { ev.preventDefault(); this.input.value = ""; this.dirty = true; this.commit(); this.select(this.sel, true); }
+      else if (mod && k.toLowerCase() === "c") { ev.preventDefault(); this.clip = { raw: this.cells[this.sel] || "", from: this.sel }; toast(`${this.sel} をコピーしました`); }
+      else if (mod && k.toLowerCase() === "v" && this.clip) {
+        ev.preventDefault();
+        const a = parseAddr(this.clip.from), b = parseAddr(this.sel);
+        this.input.value = shiftFormula(this.clip.raw, b.r - a.r, b.c - a.c); this.dirty = true; this.commit(); this.select(this.sel, true);
+      }
+      else if (mod && k.toLowerCase() === "d") { ev.preventDefault(); this.fillDown(); }
+      else if (k === "Process" || ev.isComposing) { this.edit(""); }
+      else if (k.length === 1 && !mod && !ev.altKey) { ev.preventDefault(); this.edit(k); }
+    });
+
+    const keys = this.root.querySelector(".keys");
+    keys.addEventListener("pointerdown", ev => { if (ev.target.closest("button")) ev.preventDefault(); });
+    keys.addEventListener("mousedown", ev => { if (ev.target.closest("button")) ev.preventDefault(); });
+    keys.addEventListener("click", ev => {
+      const b = ev.target.closest("button");
+      if (!b) return;
+      if (b.dataset.act === "fill") { this.fillDown(); return; }
+      if (b.dataset.act === "f4") { this.toggleAbs(); return; }
+      const t = b.dataset.ins;
+      if (document.activeElement !== this.input) this.edit(t === "=" && !this.input.value ? "" : undefined);
+      const v = this.input.value, s = this.input.selectionStart ?? v.length, e = this.input.selectionEnd ?? v.length;
+      this.input.value = v.slice(0, s) + t + v.slice(e);
+      this.input.setSelectionRange(s + t.length, s + t.length);
+      this.dirty = true; this.ins = null;
+      this.highlightRefs();
+    });
+  }
+}
+
+/* =====================================================================
+   教材データ
+   ===================================================================== */
+const LESSONS = [
+  // ---------------- 初級 ----------------
+  {
+    id: "b1", level: "初級", title: "セルと数式のはじまり", fx: "=B2+B3",
+    summary: "セル番地の読み方と、= から始まる数式の基本。",
+    explain: `
+      <p>シートのマス目を<b>セル</b>と呼びます。列はアルファベット（A, B, C…）、行は数字（1, 2, 3…）で表し、<code>B2</code> は「B列の2行目」のセルです。これを<b>セル番地</b>といいます。</p>
+      <p>計算するときは、セルに <b><code>=</code>（イコール）から始まる数式</b>を入力します。数字を直接書くより、セル番地を使うのがポイントです。</p>
+      <div class="syntax">=B2+B3</div>
+      <p>セル番地で書いておけば、元の数字を書き換えたとき結果も自動で再計算されます。</p>`,
+    task: "B4 に、1月と2月の金額を足す数式を入力しましょう。",
+    hint: "B4 を選んで <code>=</code> を入力し、B2 をクリック → <code>+</code> → B3 をクリック → Enter。",
+    after: "B2 の数字を別の値に書き換えてみてください。B4 の合計も一緒に変わります。",
+    sheet: { cols: 4, data: [["項目", "金額"], ["1月", 1200], ["2月", 800], ["合計"]] },
+    targets: [{ range: "B4", answer: "=B2+B3" }],
+  },
+  {
+    id: "b2", level: "初級", title: "四則演算と数式のコピー", fx: "=B2*C2",
+    summary: "+ − * / の使い方と、数式を下の行へコピーする方法。",
+    explain: `
+      <p>Excel で使う計算記号（演算子）は次のとおりです。掛け算は <code>×</code> ではなく <code>*</code>、割り算は <code>÷</code> ではなく <code>/</code> を使います。</p>
+      <div class="tablebox"><table><tr><th>計算</th><th>記号</th><th>例</th></tr>
+        <tr><td>足し算</td><td><code>+</code></td><td><code>=A1+B1</code></td></tr>
+        <tr><td>引き算</td><td><code>-</code></td><td><code>=A1-B1</code></td></tr>
+        <tr><td>掛け算</td><td><code>*</code></td><td><code>=A1*B1</code></td></tr>
+        <tr><td>割り算</td><td><code>/</code></td><td><code>=A1/B1</code></td></tr>
+        <tr><td>べき乗</td><td><code>^</code></td><td><code>=A1^2</code></td></tr></table></div>
+      <p>計算の順番は算数と同じで、<b>かっこ → 掛け算・割り算 → 足し算・引き算</b>です。</p>
+      <p>同じ計算を何行も行うときは、1行目に数式を作ってから下へコピーします。コピーすると <code>B2</code> は <code>B3</code>、<code>B4</code> と行番号が自動でずれます。これを<b>相対参照</b>といいます。</p>`,
+    task: "D2 に「単価 × 数量」の数式を入力し、「下へコピー ↓」で D4 までコピーしましょう。",
+    hint: "D2 に <code>=B2*C2</code>。Excel ではセル右下の■（フィルハンドル）をダブルクリックすると同じことができます。",
+    sheet: { cols: 5, data: [["商品", "単価", "数量", "小計"], ["ノート", 150, 4], ["ボールペン", 120, 10], ["消しゴム", 80, 6]] },
+    targets: [{ range: "D2:D4", answer: "=B2*C2" }],
+  },
+  {
+    id: "b3", level: "初級", title: "SUM で合計する", fx: "=SUM(B2:B6)",
+    summary: "範囲の指定と、いちばんよく使う関数 SUM。",
+    explain: `
+      <p><b>関数</b>は、決まった計算をまとめて行ってくれる命令です。書き方は「<code>=関数名(引数)</code>」。かっこの中に渡す値を<b>引数</b>（ひきすう）といいます。</p>
+      <p>連続したセルは <code>:</code>（コロン）でつないで<b>範囲</b>として指定できます。<code>B2:B6</code> は B2 から B6 までの5つのセルです。</p>
+      <div class="syntax">=SUM(範囲)　例：=SUM(B2:B6)</div>
+      <p>Windows では <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>=</kbd>（オートSUM）で、合計の数式を自動で入れられます。</p>`,
+    task: "B7 に、5日間の売上の合計を SUM 関数で求めましょう。",
+    hint: "<code>=SUM(</code> と入力してから B2 から B6 までドラッグすると範囲が入ります。",
+    sheet: { cols: 4, data: [["日付", "売上（円）"], ["10/1", 32000], ["10/2", 28500], ["10/3", 41000], ["10/4", 19800], ["10/5", 36700], ["合計"]] },
+    targets: [{ range: "B7", answer: "=SUM(B2:B6)" }],
+    mustUse: ["SUM"],
+  },
+  {
+    id: "b4", level: "初級", title: "AVERAGE で平均を出す", fx: "=AVERAGE(B2:B6)",
+    summary: "合計 ÷ 個数を1つの関数で。",
+    explain: `
+      <p><code>AVERAGE</code> は範囲の平均値を求めます。<code>=SUM(B2:B6)/5</code> と同じ結果ですが、データの数が変わっても数え直す必要がありません。</p>
+      <div class="syntax">=AVERAGE(範囲)</div>
+      <p>空のセルや文字のセルは自動的に計算から外されます。</p>`,
+    task: "B7 に、5人の国語の平均点を求めましょう。",
+    hint: "<code>=AVERAGE(B2:B6)</code>",
+    sheet: { cols: 4, data: [["氏名", "国語"], ["佐藤", 72], ["鈴木", 85], ["高橋", 64], ["田中", 90], ["伊藤", 58], ["平均"]] },
+    targets: [{ range: "B7", answer: "=AVERAGE(B2:B6)" }],
+    mustUse: ["AVERAGE"],
+  },
+  {
+    id: "b5", level: "初級", title: "MAX と MIN", fx: "=MAX(B2:B6)",
+    summary: "いちばん大きい値・小さい値を探す。",
+    explain: `
+      <p><code>MAX</code> は範囲の中の最大値、<code>MIN</code> は最小値を返します。書き方は SUM と同じです。</p>
+      <div class="syntax">=MAX(範囲)　　=MIN(範囲)</div>
+      <p>売上の最高記録や、テストの最低点を探すときに使います。</p>`,
+    task: "B7 に来客数の最大値、B8 に最小値を求めましょう。",
+    hint: "B7 は <code>=MAX(B2:B6)</code>、B8 は <code>=MIN(B2:B6)</code>。",
+    sheet: { cols: 4, data: [["店舗", "来客数"], ["新宿", 412], ["渋谷", 388], ["池袋", 455], ["上野", 297], ["品川", 341], ["最大"], ["最小"]] },
+    targets: [{ range: "B7", answer: "=MAX(B2:B6)", mustUse: ["MAX"] }, { range: "B8", answer: "=MIN(B2:B6)", mustUse: ["MIN"] }],
+  },
+  {
+    id: "b6", level: "初級", title: "COUNT と COUNTA で数える", fx: "=COUNT(B2:B7)",
+    summary: "数値の個数と、空でないセルの個数の違い。",
+    explain: `
+      <p>セルの<b>個数</b>を数える関数は2種類あります。</p>
+      <div class="tablebox"><table><tr><th>関数</th><th>数えるもの</th></tr>
+        <tr><td><code>COUNT</code></td><td>数値が入ったセルだけ</td></tr>
+        <tr><td><code>COUNTA</code></td><td>空ではないセル（文字も数える）</td></tr>
+        <tr><td><code>COUNTBLANK</code></td><td>空のセル</td></tr></table></div>
+      <p>点数の欄に「欠席」と文字が入っている場合、<code>COUNT</code> では数えられません。この違いを利用すると「受験した人数」が求められます。</p>`,
+    task: "B8 に受験者数（点数が数値の人数）を、B9 に名簿の人数（A列の名前の数）を求めましょう。",
+    hint: "B8 は <code>=COUNT(B2:B7)</code>、B9 は <code>=COUNTA(A2:A7)</code>。",
+    sheet: { cols: 4, data: [["氏名", "点数"], ["青木", 78], ["石井", "欠席"], ["上田", 92], ["江口", ""], ["小川", 65], ["加藤", 81], ["受験者数"], ["名簿の人数"]] },
+    targets: [{ range: "B8", answer: "=COUNT(B2:B7)", mustUse: ["COUNT"] }, { range: "B9", answer: "=COUNTA(A2:A7)", mustUse: ["COUNTA"] }],
+  },
+  {
+    id: "b7", level: "初級", title: "絶対参照 $ で番地を固定", fx: "=B2*(1+$F$1)",
+    summary: "コピーしてもずれない参照の作り方。初級の山場です。",
+    explain: `
+      <p>数式をコピーすると番地がずれる（相対参照）のは便利ですが、<b>全行で同じセルを使いたい</b>ときは困ります。</p>
+      <p>たとえば C2 に <code>=B2*(1+F1)</code> と書いて下へコピーすると、C3 は <code>=B3*(1+F2)</code> になり、空の F2 を参照してしまいます。</p>
+      <p>そこで列と行の前に <code>$</code> を付けて <code>$F$1</code> とすると、コピーしても F1 のまま固定されます。これが<b>絶対参照</b>です。</p>
+      <div class="tablebox"><table><tr><th>書き方</th><th>コピーしたとき</th></tr>
+        <tr><td><code>F1</code></td><td>列も行もずれる（相対参照）</td></tr>
+        <tr><td><code>$F$1</code></td><td>どちらも固定（絶対参照）</td></tr>
+        <tr><td><code>F$1</code> / <code>$F1</code></td><td>行だけ／列だけ固定（複合参照）</td></tr></table></div>
+      <p>番地を入力した直後に <kbd>F4</kbd> キーを押すと <code>$</code> が順番に切り替わります。このアプリでは「$ 切替」ボタンでも同じことができます。</p>`,
+    task: "C2 に税込価格（税抜価格 ×（1 + 税率））を求める数式を入れ、C5 までコピーしましょう。税率は F1 にあります。",
+    hint: "<code>=B2*(1+$F$1)</code>。F1 を入力した直後に F4 を押すと <code>$F$1</code> になります。",
+    ngHint: "コピーした先で税率のセルがずれていませんか？ 数式の F1 を <code>$F$1</code> にしてから、もう一度コピーしてみましょう。",
+    sheet: { cols: 6, data: [["商品", "税抜価格", "税込価格", "", "税率", 0.1], ["コーヒー", 450], ["紅茶", 420], ["ケーキ", 580], ["サンド", 650]] },
+    targets: [{ range: "C2:C5", answer: "=B2*(1+$F$1)" }],
+  },
+  {
+    id: "b8", level: "初級", title: "ROUND で端数を処理", fx: "=ROUND(B2*1.08,0)",
+    summary: "四捨五入・切り上げ・切り捨て。",
+    explain: `
+      <p>消費税の計算などで小数が出たときは <code>ROUND</code> で四捨五入します。2つ目の引数は「残す桁」です。</p>
+      <div class="syntax">=ROUND(数値, 桁数)</div>
+      <div class="tablebox"><table><tr><th>桁数</th><th>例：1234.567 の結果</th></tr>
+        <tr><td><code>0</code></td><td>1235（整数にする）</td></tr>
+        <tr><td><code>1</code></td><td>1234.6（小数第1位まで）</td></tr>
+        <tr><td><code>-1</code></td><td>1230（十の位まで）</td></tr></table></div>
+      <p>切り上げは <code>ROUNDUP</code>、切り捨ては <code>ROUNDDOWN</code>。書き方は同じです。</p>`,
+    task: "C2 に、税抜価格に 8% の消費税を加えて整数に四捨五入した金額を求め、C4 までコピーしましょう。",
+    hint: "<code>=ROUND(B2*1.08,0)</code>。関数の中に計算式を入れられます。",
+    sheet: { cols: 4, data: [["商品", "税抜価格", "税込（四捨五入）"], ["弁当", 398], ["お茶", 138], ["おにぎり", 158]] },
+    targets: [{ range: "C2:C4", answer: "=ROUND(B2*1.08,0)" }],
+    mustUse: ["ROUND"],
+  },
+  {
+    id: "b9", level: "初級", title: "& で文字をつなぐ", fx: '=A2&B2&"様"',
+    summary: "セルの文字と文字列をくっつける。",
+    explain: `
+      <p><code>&</code>（アンド）を使うと、セルの文字同士をつなげられます。</p>
+      <p>数式の中に文字そのものを書くときは <code>"</code>（ダブルクォーテーション）で囲みます。</p>
+      <div class="syntax">=A2&B2&"様"　→　山田太郎様</div>
+      <p>間に空白を入れたいときは <code>=A2&" "&B2</code> のように書きます。<code>CONCAT</code> 関数でも同じことができます。</p>`,
+    task: "C2 に、姓と名をつなげて最後に「様」を付けた宛名を作り、C4 までコピーしましょう。",
+    hint: '<code>=A2&B2&"様"</code>。「様」は必ず " " で囲みます。',
+    sheet: { cols: 4, data: [["姓", "名", "宛名"], ["山田", "太郎"], ["佐々木", "花子"], ["中村", "健"]] },
+    targets: [{ range: "C2:C4", answer: '=A2&B2&"様"' }],
+  },
+
+  // ---------------- 中級 ----------------
+  {
+    id: "i1", level: "中級", title: "IF で条件分岐", fx: '=IF(B2>=60,"合格","不合格")',
+    summary: "条件によって表示を変える、中級の入口。",
+    explain: `
+      <p><code>IF</code> は「もし条件が成り立てば A、そうでなければ B」を表示する関数です。</p>
+      <div class="syntax">=IF(条件, 成り立つとき, 成り立たないとき)</div>
+      <p>条件には比較演算子を使います。</p>
+      <div class="tablebox"><table><tr><th>記号</th><th>意味</th></tr>
+        <tr><td><code>=</code></td><td>等しい</td></tr><tr><td><code>&lt;&gt;</code></td><td>等しくない</td></tr>
+        <tr><td><code>&gt;</code> / <code>&lt;</code></td><td>より大きい／より小さい</td></tr>
+        <tr><td><code>&gt;=</code> / <code>&lt;=</code></td><td>以上／以下</td></tr></table></div>`,
+    task: "C2 に、得点が 60 点以上なら「合格」、それ以外は「不合格」と表示する数式を作り、C6 までコピーしましょう。",
+    hint: '<code>=IF(B2>=60,"合格","不合格")</code>',
+    sheet: { cols: 4, data: [["氏名", "得点", "判定"], ["阿部", 72], ["井上", 55], ["遠藤", 60], ["大野", 48], ["川口", 91]] },
+    targets: [{ range: "C2:C6", answer: '=IF(B2>=60,"合格","不合格")' }],
+    mustUse: ["IF"],
+  },
+  {
+    id: "i2", level: "中級", title: "AND・OR で条件を組み合わせる", fx: "=IF(AND(B2>=70,C2>=70),…)",
+    summary: "「両方とも」「どちらか」の条件。",
+    explain: `
+      <p>複数の条件を組み合わせるときは <code>AND</code> と <code>OR</code> を使います。</p>
+      <div class="tablebox"><table><tr><th>関数</th><th>TRUE になるとき</th></tr>
+        <tr><td><code>AND(条件1, 条件2, …)</code></td><td>すべての条件が成り立つ</td></tr>
+        <tr><td><code>OR(条件1, 条件2, …)</code></td><td>どれか1つでも成り立つ</td></tr></table></div>
+      <p>IF の条件の部分に入れて使うのが定番です。</p>
+      <div class="syntax">=IF(AND(B2>=70,C2>=70),"合格","不合格")</div>`,
+    task: "D2 に、筆記と実技が「両方とも」70 点以上なら「合格」、それ以外は「不合格」と表示し、D5 までコピーしましょう。",
+    hint: '<code>=IF(AND(B2>=70,C2>=70),"合格","不合格")</code>',
+    sheet: { cols: 5, data: [["氏名", "筆記", "実技", "判定"], ["木村", 82, 75], ["工藤", 68, 90], ["小林", 74, 71], ["斎藤", 90, 62]] },
+    targets: [{ range: "D2:D5", answer: '=IF(AND(B2>=70,C2>=70),"合格","不合格")' }],
+    mustUse: ["IF", "AND"],
+  },
+  {
+    id: "i3", level: "中級", title: "IF の入れ子で3段階評価", fx: '=IF(B2>=80,"A",IF(…))',
+    summary: "IF の中に IF を入れて、3つ以上に分ける。",
+    explain: `
+      <p>結果を3つ以上に分けたいときは、IF の「成り立たないとき」の部分にもう1つ IF を入れます。これを<b>入れ子（ネスト）</b>といいます。</p>
+      <div class="syntax">=IF(B2>=80,"A",IF(B2>=60,"B","C"))</div>
+      <p>上から順に判定されるので、<b>大きい条件から先に書く</b>のがコツです。</p>
+      <p>Excel 2019 以降では <code>=IFS(B2>=80,"A",B2>=60,"B",TRUE,"C")</code> とも書けます。</p>`,
+    task: "C2 に、80 点以上は「A」、60 点以上は「B」、それ未満は「C」と表示し、C6 までコピーしましょう。",
+    hint: '<code>=IF(B2>=80,"A",IF(B2>=60,"B","C"))</code>。かっこの数に注意。',
+    sheet: { cols: 4, data: [["氏名", "得点", "評価"], ["坂本", 88], ["清水", 73], ["杉山", 59], ["関", 80], ["高田", 60]] },
+    targets: [{ range: "C2:C6", answer: '=IF(B2>=80,"A",IF(B2>=60,"B","C"))' }],
+  },
+  {
+    id: "i4", level: "中級", title: "COUNTIF で条件に合う数を数える", fx: '=COUNTIF(A2:A8,"東京")',
+    summary: "「東京は何件？」「5万円以上は何件？」",
+    explain: `
+      <p><code>COUNTIF</code> は、範囲の中で条件に合うセルの数を数えます。</p>
+      <div class="syntax">=COUNTIF(範囲, 条件)</div>
+      <div class="tablebox"><table><tr><th>条件の書き方</th><th>意味</th></tr>
+        <tr><td><code>"東京"</code></td><td>「東京」と等しい</td></tr>
+        <tr><td><code>"&gt;=50000"</code></td><td>50000 以上</td></tr>
+        <tr><td><code>"&lt;&gt;東京"</code></td><td>東京以外</td></tr>
+        <tr><td><code>"東*"</code></td><td>「東」で始まる（* はワイルドカード）</td></tr>
+        <tr><td><code>D2</code></td><td>D2 の値と等しい</td></tr></table></div>
+      <p>比較演算子を使う条件も <code>" "</code> で囲むのがポイントです。</p>`,
+    task: "E2 に支店が「東京」の件数を、E3 に売上が 50000 円以上の件数を求めましょう。",
+    hint: 'E2 は <code>=COUNTIF(A2:A8,"東京")</code>（または <code>=COUNTIF(A2:A8,D2)</code>）、E3 は <code>=COUNTIF(B2:B8,">=50000")</code>。',
+    sheet: { cols: 5, data: [["支店", "売上", "", "条件", "件数"], ["東京", 52000, "", "東京"], ["大阪", 50000, "", "5万円以上"], ["東京", 61000], ["名古屋", 27000], ["大阪", 45000], ["東京", 33000], ["福岡", 58000]] },
+    targets: [{ range: "E2", answer: '=COUNTIF(A2:A8,"東京")' }, { range: "E3", answer: '=COUNTIF(B2:B8,">=50000")' }],
+    mustUse: ["COUNTIF"],
+  },
+  {
+    id: "i5", level: "中級", title: "SUMIF で条件付き合計", fx: "=SUMIF($A$2:$A$8,D2,$B$2:$B$8)",
+    summary: "支店別・担当者別の集計表を作る。",
+    explain: `
+      <p><code>SUMIF</code> は、条件に合う行の数値だけを合計します。</p>
+      <div class="syntax">=SUMIF(条件の範囲, 条件, 合計する範囲)</div>
+      <p>集計表を作るときは、条件をセル（D2 など）で指定し、範囲は <code>$</code> で固定しておくと、下へコピーするだけで全支店の集計が完成します。</p>
+      <p>平均なら <code>AVERAGEIF</code> を使います。書き方は同じです。</p>`,
+    task: "E2 に、D2 の支店（東京）の売上合計を求め、E4 までコピーして大阪・名古屋の合計も出しましょう。",
+    hint: "<code>=SUMIF($A$2:$A$8,D2,$B$2:$B$8)</code>。範囲を $ で固定しないとコピー後にずれます。",
+    ngHint: "コピーした先で範囲がずれていませんか？ <code>A2:A8</code> と <code>B2:B8</code> を <code>$</code> で固定しましょう。",
+    sheet: { cols: 5, data: [["支店", "売上", "", "支店", "売上合計"], ["東京", 52000, "", "東京"], ["大阪", 50000, "", "大阪"], ["東京", 61000, "", "名古屋"], ["名古屋", 27000], ["大阪", 45000], ["東京", 33000], ["名古屋", 30500]] },
+    targets: [{ range: "E2:E4", answer: "=SUMIF($A$2:$A$8,D2,$B$2:$B$8)" }],
+    mustUse: ["SUMIF"],
+  },
+  {
+    id: "i6", level: "中級", title: "VLOOKUP で表から探す", fx: "=VLOOKUP(A2,$E$2:$G$5,2,FALSE)",
+    summary: "コードから商品名や単価を自動で引いてくる。",
+    explain: `
+      <p><code>VLOOKUP</code> は、表の<b>いちばん左の列</b>から値を探し、同じ行の指定した列の値を返します。</p>
+      <div class="syntax">=VLOOKUP(探す値, 表の範囲, 列番号, FALSE)</div>
+      <ul>
+        <li><b>列番号</b>：表の範囲の左端を 1 として何列目か</li>
+        <li><b>FALSE</b>：完全に一致するものだけを探す（ほぼ常に FALSE を指定）</li>
+      </ul>
+      <p>表の範囲はコピーしてもずれないよう <code>$</code> で固定します。見つからないときは <code>#N/A</code> エラーになります。</p>`,
+    task: "B2 に商品名、C2 に単価を、右の商品マスタ（E〜G列）から VLOOKUP で取り出し、それぞれ5行目までコピーしましょう。",
+    hint: "B2 は <code>=VLOOKUP(A2,$E$2:$G$5,2,FALSE)</code>、C2 は列番号を 3 に。",
+    sheet: { cols: 7, data: [["コード", "商品名", "単価", "", "コード", "商品名", "単価"], ["P03", "", "", "", "P01", "りんご", 120], ["P01", "", "", "", "P02", "バナナ", 98], ["P04", "", "", "", "P03", "ぶどう", 450], ["P02", "", "", "", "P04", "もも", 380]] },
+    targets: [{ range: "B2:B5", answer: "=VLOOKUP(A2,$E$2:$G$5,2,FALSE)" }, { range: "C2:C5", answer: "=VLOOKUP(A2,$E$2:$G$5,3,FALSE)" }],
+    mustUse: ["VLOOKUP"],
+  },
+  {
+    id: "i7", level: "中級", title: "IFERROR でエラーを見やすく", fx: '=IFERROR(VLOOKUP(…),"該当なし")',
+    summary: "#N/A などのエラーを、わかりやすい表示に置き換える。",
+    explain: `
+      <p>VLOOKUP で見つからないと <code>#N/A</code> が表示されます。<code>IFERROR</code> で包むと、エラーのときだけ別の値を表示できます。</p>
+      <div class="syntax">=IFERROR(数式, エラーのときの表示)</div>
+      <div class="tablebox"><table><tr><th>主なエラー</th><th>原因</th></tr>
+        <tr><td><code>#N/A</code></td><td>検索値が見つからない</td></tr>
+        <tr><td><code>#DIV/0!</code></td><td>0 で割った</td></tr>
+        <tr><td><code>#VALUE!</code></td><td>文字に計算をした</td></tr>
+        <tr><td><code>#NAME?</code></td><td>関数名のつづり間違い、" " の付け忘れ</td></tr>
+        <tr><td><code>#REF!</code></td><td>存在しないセルを参照</td></tr></table></div>`,
+    task: "B2 に、A2 のコードを D〜E 列の表から探して商品名を表示し、見つからなければ「該当なし」と表示する数式を作り、B5 までコピーしましょう。",
+    hint: '<code>=IFERROR(VLOOKUP(A2,$D$2:$E$4,2,FALSE),"該当なし")</code>',
+    sheet: { cols: 6, data: [["コード", "商品名", "", "コード", "商品名"], ["P02", "", "", "P01", "りんご"], ["P09", "", "", "P02", "バナナ"], ["P01", "", "", "P03", "ぶどう"], ["P05"]] },
+    targets: [{ range: "B2:B5", answer: '=IFERROR(VLOOKUP(A2,$D$2:$E$4,2,FALSE),"該当なし")' }],
+    mustUse: ["IFERROR"],
+  },
+  {
+    id: "i8", level: "中級", title: "INDEX と MATCH の組み合わせ", fx: "=INDEX(A2:A6,MATCH(D2,B2:B6,0))",
+    summary: "VLOOKUP ではできない「左の列」の取り出し。",
+    explain: `
+      <p>VLOOKUP は左端の列でしか探せません。探す列が右にある場合は <code>INDEX</code> と <code>MATCH</code> を組み合わせます。</p>
+      <div class="syntax">=MATCH(探す値, 範囲, 0)　→ 何番目にあるか</div>
+      <div class="syntax">=INDEX(範囲, 番号)　→ 範囲の◯番目の値</div>
+      <p>MATCH で「ぶどうは上から3番目」と調べ、INDEX で「単価の列の3番目」を取り出す、という流れです。MATCH の最後の <code>0</code> は完全一致の指定です。</p>`,
+    task: "E2 に、D2 の商品（ぶどう）の単価を INDEX と MATCH で求めましょう。",
+    hint: "<code>=INDEX(A2:A6,MATCH(D2,B2:B6,0))</code>",
+    sheet: { cols: 6, data: [["単価", "商品名", "", "探す商品", "単価"], [120, "りんご", "", "ぶどう"], [98, "バナナ"], [450, "ぶどう"], [380, "もも"], [210, "なし"]] },
+    targets: [{ range: "E2", answer: "=INDEX(A2:A6,MATCH(D2,B2:B6,0))" }],
+    mustUse: ["INDEX", "MATCH"],
+  },
+  {
+    id: "i9", level: "中級", title: "LEFT・RIGHT・MID で文字を取り出す", fx: "=LEFT(A2,2)",
+    summary: "コードの一部を切り出す文字列関数。",
+    explain: `
+      <p>文字列の一部を取り出す関数です。</p>
+      <div class="tablebox"><table><tr><th>関数</th><th>働き</th><th>"SL-1023" の例</th></tr>
+        <tr><td><code>LEFT(文字, 数)</code></td><td>左から◯文字</td><td><code>LEFT(A2,2)</code> → SL</td></tr>
+        <tr><td><code>RIGHT(文字, 数)</code></td><td>右から◯文字</td><td><code>RIGHT(A2,4)</code> → 1023</td></tr>
+        <tr><td><code>MID(文字, 開始, 数)</code></td><td>途中から◯文字</td><td><code>MID(A2,4,2)</code> → 10</td></tr>
+        <tr><td><code>LEN(文字)</code></td><td>文字数</td><td><code>LEN(A2)</code> → 7</td></tr></table></div>`,
+    task: "B2 に社員コードの左2文字（部署）、C2 に右4文字（番号）を取り出し、それぞれ5行目までコピーしましょう。",
+    hint: "B2 は <code>=LEFT(A2,2)</code>、C2 は <code>=RIGHT(A2,4)</code>。",
+    sheet: { cols: 4, data: [["社員コード", "部署", "番号"], ["SL-1023"], ["HR-0457"], ["IT-2981"], ["GA-3301"]] },
+    targets: [{ range: "B2:B5", answer: "=LEFT(A2,2)", mustUse: ["LEFT"] }, { range: "C2:C5", answer: "=RIGHT(A2,4)", mustUse: ["RIGHT"] }],
+  },
+  {
+    id: "i10", level: "中級", title: "XLOOKUP で新しい検索", fx: '=XLOOKUP(E2,$A$2:$A$5,$B$2:$B$5,"見つかりません")',
+    summary: "Microsoft 365 の新しい検索関数。",
+    explain: `
+      <p><code>XLOOKUP</code> は VLOOKUP と INDEX/MATCH の良いところを合わせた関数です（Microsoft 365・Excel 2021 以降）。</p>
+      <div class="syntax">=XLOOKUP(探す値, 探す範囲, 返す範囲, 見つからないとき)</div>
+      <ul>
+        <li>探す列が左端でなくてもよい</li>
+        <li>列番号を数えなくてよい</li>
+        <li>見つからないときの表示を引数で指定できる（IFERROR 不要）</li>
+      </ul>`,
+    task: "F2 に、E2 の社員番号の氏名を XLOOKUP で求め、見つからなければ「見つかりません」と表示し、F3 までコピーしましょう。",
+    hint: '<code>=XLOOKUP(E2,$A$2:$A$5,$B$2:$B$5,"見つかりません")</code>',
+    sheet: { cols: 6, data: [["社員番号", "氏名", "部署", "", "検索番号", "氏名"], [1001, "佐藤", "営業", "", 1003], [1002, "鈴木", "総務", "", 1009], [1003, "高橋", "開発"], [1004, "田中", "営業"]] },
+    targets: [{ range: "F2:F3", answer: '=XLOOKUP(E2,$A$2:$A$5,$B$2:$B$5,"見つかりません")' }],
+    mustUse: ["XLOOKUP"],
+  },
+  {
+    id: "i11", level: "中級", title: "SUMIFS・COUNTIFS で複数条件", fx: '=SUMIFS(C2:C7,A2:A7,"東京",…)',
+    summary: "「東京」かつ「りんご」のような絞り込み集計。",
+    explain: `
+      <p>条件が2つ以上あるときは、末尾に <b>S</b> が付いた関数を使います。</p>
+      <div class="syntax">=SUMIFS(合計する範囲, 条件範囲1, 条件1, 条件範囲2, 条件2, …)</div>
+      <div class="syntax">=COUNTIFS(条件範囲1, 条件1, 条件範囲2, 条件2, …)</div>
+      <p>注意：<code>SUMIFS</code> は<b>合計する範囲が最初</b>です。<code>SUMIF</code>（最後）と順番が違います。</p>`,
+    task: "E2 に「東京」かつ「りんご」の売上合計を、E5 に「りんご」で売上が 10000 円以上の件数を求めましょう。",
+    hint: 'E2 は <code>=SUMIFS(C2:C7,A2:A7,"東京",B2:B7,"りんご")</code>、E5 は <code>=COUNTIFS(B2:B7,"りんご",C2:C7,">=10000")</code>。',
+    sheet: { cols: 5, data: [["支店", "商品", "売上", "", "東京×りんごの売上"], ["東京", "りんご", 12000], ["大阪", "りんご", 9000, "", ""], ["東京", "みかん", 8000, "", "りんご1万円以上の件数"], ["東京", "りんご", 15000], ["大阪", "みかん", 7000], ["東京", "りんご", 6000]] },
+    targets: [{ range: "E2", answer: '=SUMIFS(C2:C7,A2:A7,"東京",B2:B7,"りんご")', mustUse: ["SUMIFS"] }, { range: "E5", answer: '=COUNTIFS(B2:B7,"りんご",C2:C7,">=10000")', mustUse: ["COUNTIFS"] }],
+  },
+];
+
+const QUIZ = {
+  初級: [
+    { q: "数式を入力するとき、最初に入力する記号は？", c: ["=", "+", "#", "@"], a: 0, e: "数式は必ず「=」から始めます。" },
+    { q: "セル番地「C5」が表すセルは？", c: ["C列の5行目", "5列目のC行", "C列から5つ目までの範囲", "5番目のシートのC列"], a: 0, e: "アルファベットが列、数字が行です。" },
+    { q: "=2+3*4 の結果は？", c: ["14", "20", "24", "9"], a: 0, e: "掛け算が先なので 3*4=12、2+12=14 です。" },
+    { q: "掛け算を表す演算子は？", c: ["*", "×", "x", "・"], a: 0, e: "Excel では「*」（アスタリスク）を使います。" },
+    { q: "範囲「A1:A5」に含まれるセルの数は？", c: ["5", "2", "10", "1"], a: 0, e: "A1, A2, A3, A4, A5 の5つです。" },
+    { q: "A1=10、A2=「りんご」、A3=空、A4=5 のとき =COUNT(A1:A4) の結果は？", c: ["2", "3", "4", "1"], a: 0, e: "COUNT は数値のセルだけを数えます。文字と空は数えません。" },
+    { q: "コピーしても参照がずれない「$A$1」のような参照を何という？", c: ["絶対参照", "相対参照", "循環参照", "外部参照"], a: 0, e: "$ を付けて固定した参照が絶対参照です。" },
+    { q: "Windows で参照の $ を切り替えるキーは？", c: ["F4", "F2", "F5", "F12"], a: 0, e: "番地の直後で F4 を押すたびに $A$1 → A$1 → $A1 → A1 と切り替わります。" },
+    { q: "=ROUND(3.456,1) の結果は？", c: ["3.5", "3.4", "3.46", "3"], a: 0, e: "小数第1位まで残して四捨五入するので 3.5 です。" },
+    { q: 'A1 が 100 のとき =A1&"円" の結果は？', c: ["100円", "100&円", "#VALUE!", "円100"], a: 0, e: "& は文字をつなげます。" },
+  ],
+  中級: [
+    { q: 'A1 が 50 のとき =IF(A1>=50,"OK","NG") の結果は？', c: ["OK", "NG", "TRUE", "50"], a: 0, e: "「>=」は以上なので 50 も含まれます。" },
+    { q: "「等しくない」を表す比較演算子は？", c: ["<>", "!=", "≠", "=!"], a: 0, e: "Excel では「<>」を使います。" },
+    { q: "=AND(TRUE,FALSE) の結果は？", c: ["FALSE", "TRUE", "#VALUE!", "0.5"], a: 0, e: "AND はすべてが TRUE のときだけ TRUE になります。" },
+    { q: '=COUNTIF(A1:A10,">=80") の意味は？', c: ["80以上のセルの個数", "80以上の値の合計", "80番目のセル", "80未満のセルの個数"], a: 0, e: "COUNTIF は条件に合うセルの個数を数えます。" },
+    { q: "VLOOKUP で完全に一致するものだけを探すときの第4引数は？", c: ["FALSE（または 0）", "TRUE", "1", "省略する"], a: 0, e: "省略や TRUE は近似一致になるので、通常は FALSE を指定します。" },
+    { q: "VLOOKUP で検索値が見つからないときのエラーは？", c: ["#N/A", "#VALUE!", "#DIV/0!", "#NAME?"], a: 0, e: "#N/A は「該当なし（Not Available）」の意味です。" },
+    { q: "SUMIFS で最初に指定する引数は？", c: ["合計する範囲", "条件範囲", "条件", "探す値"], a: 0, e: "SUMIF とは順番が違い、SUMIFS は合計範囲が先頭です。" },
+    { q: '=LEFT("ABC-123",3) の結果は？', c: ["ABC", "123", "ABC-", "C-1"], a: 0, e: "左から3文字を取り出します。" },
+    { q: "MATCH 関数の第3引数「0」の意味は？", c: ["完全一致", "以下の最大値", "以上の最小値", "先頭の1件のみ"], a: 0, e: "INDEX と組み合わせるときは 0（完全一致）を指定するのが基本です。" },
+    { q: '=IFERROR(1/0,"エラー") の結果は？', c: ["エラー", "#DIV/0!", "0", "1"], a: 0, e: "1/0 は #DIV/0! エラーになるので、代わりに「エラー」が表示されます。" },
+  ],
+};
+
+const REFERENCE = [
+  { group: "集計", items: [
+    ["SUM", "SUM(範囲)", "合計", "=SUM(B2:B6)", "初級"],
+    ["AVERAGE", "AVERAGE(範囲)", "平均", "=AVERAGE(B2:B6)", "初級"],
+    ["MAX / MIN", "MAX(範囲)", "最大値／最小値", "=MAX(B2:B6)", "初級"],
+    ["COUNT", "COUNT(範囲)", "数値のセルの個数", "=COUNT(B2:B7)", "初級"],
+    ["COUNTA", "COUNTA(範囲)", "空でないセルの個数", "=COUNTA(A2:A7)", "初級"],
+    ["COUNTIF", "COUNTIF(範囲, 条件)", "条件に合うセルの個数", '=COUNTIF(A2:A8,"東京")', "中級"],
+    ["SUMIF", "SUMIF(範囲, 条件, 合計範囲)", "条件に合う行の合計", '=SUMIF(A2:A8,"東京",B2:B8)', "中級"],
+    ["AVERAGEIF", "AVERAGEIF(範囲, 条件, 平均範囲)", "条件に合う行の平均", '=AVERAGEIF(A2:A8,"東京",B2:B8)', "中級"],
+    ["SUMIFS", "SUMIFS(合計範囲, 範囲1, 条件1, …)", "複数条件の合計", '=SUMIFS(C2:C7,A2:A7,"東京",B2:B7,"りんご")', "中級"],
+    ["COUNTIFS", "COUNTIFS(範囲1, 条件1, …)", "複数条件の個数", '=COUNTIFS(A2:A7,"東京",C2:C7,">=10000")', "中級"],
+    ["RANK.EQ", "RANK.EQ(数値, 範囲, [順序])", "順位", "=RANK.EQ(B2,$B$2:$B$6)", "中級"],
+    ["LARGE / SMALL", "LARGE(範囲, 順位)", "◯番目に大きい／小さい値", "=LARGE(B2:B6,2)", "中級"],
+  ]},
+  { group: "数値の処理", items: [
+    ["ROUND", "ROUND(数値, 桁数)", "四捨五入", "=ROUND(B2*1.1,0)", "初級"],
+    ["ROUNDUP / ROUNDDOWN", "ROUNDUP(数値, 桁数)", "切り上げ／切り捨て", "=ROUNDDOWN(B2,-2)", "初級"],
+    ["INT", "INT(数値)", "小数点以下を切り捨てた整数", "=INT(3.7)", "初級"],
+    ["MOD", "MOD(数値, 割る数)", "割り算の余り", "=MOD(10,3)", "中級"],
+  ]},
+  { group: "条件・論理", items: [
+    ["IF", "IF(条件, 真の場合, 偽の場合)", "条件で表示を分ける", '=IF(B2>=60,"合格","不合格")', "中級"],
+    ["IFS", "IFS(条件1, 値1, 条件2, 値2, …)", "複数の条件を順に判定", '=IFS(B2>=80,"A",B2>=60,"B",TRUE,"C")', "中級"],
+    ["AND / OR", "AND(条件1, 条件2, …)", "すべて／どれかが成り立つか", "=AND(B2>=70,C2>=70)", "中級"],
+    ["NOT", "NOT(条件)", "条件の反対", "=NOT(B2>=60)", "中級"],
+    ["IFERROR", "IFERROR(数式, エラー時の値)", "エラーを別の表示に", '=IFERROR(B2/C2,"-")', "中級"],
+  ]},
+  { group: "検索", items: [
+    ["VLOOKUP", "VLOOKUP(探す値, 範囲, 列番号, FALSE)", "表の左端から探して値を返す", "=VLOOKUP(A2,$E$2:$G$5,2,FALSE)", "中級"],
+    ["XLOOKUP", "XLOOKUP(探す値, 探す範囲, 返す範囲, [見つからない時])", "新しい検索関数", "=XLOOKUP(E2,A2:A5,B2:B5)", "中級"],
+    ["INDEX", "INDEX(範囲, 行番号, [列番号])", "範囲の◯番目の値", "=INDEX(A2:A6,3)", "中級"],
+    ["MATCH", "MATCH(探す値, 範囲, 0)", "範囲の何番目にあるか", "=MATCH(D2,B2:B6,0)", "中級"],
+  ]},
+  { group: "文字列", items: [
+    ["&", "文字 & 文字", "文字をつなぐ", '=A2&B2&"様"', "初級"],
+    ["LEFT / RIGHT", "LEFT(文字, 文字数)", "左／右から取り出す", "=LEFT(A2,2)", "中級"],
+    ["MID", "MID(文字, 開始位置, 文字数)", "途中から取り出す", "=MID(A2,4,2)", "中級"],
+    ["LEN", "LEN(文字)", "文字数", "=LEN(A2)", "中級"],
+    ["TRIM", "TRIM(文字)", "余分な空白を削除", "=TRIM(A2)", "中級"],
+    ["SUBSTITUTE", "SUBSTITUTE(文字, 検索, 置換)", "文字を置き換える", '=SUBSTITUTE(A2,"-","")', "中級"],
+    ["TEXT", "TEXT(数値, 表示形式)", "数値を書式付きの文字に", '=TEXT(B2,"#,##0円")', "中級"],
+  ]},
+];
+
+const SHORTCUTS = [
+  ["Ctrl + C / Ctrl + V", "コピー／貼り付け"],
+  ["Ctrl + Z / Ctrl + Y", "元に戻す／やり直し"],
+  ["Ctrl + S", "上書き保存"],
+  ["F2", "選択中のセルを編集"],
+  ["F4", "参照の $ を切り替え（数式の編集中）"],
+  ["Alt + Shift + =", "オートSUM"],
+  ["Ctrl + D", "上のセルの内容を下へコピー"],
+  ["Ctrl + ;", "今日の日付を入力"],
+  ["Ctrl + 矢印キー", "データの端まで移動"],
+  ["Ctrl + Shift + L", "フィルターのオン／オフ"],
+  ["Ctrl + 1", "セルの書式設定"],
+  ["Alt + Enter", "セル内で改行"],
+];
+
+const PRACTICE_SAMPLE = [
+  ["費目", "4月", "5月", "6月", "合計", "月平均"],
+  ["食費", 42000, 39800, 45100, "=SUM(B2:D2)", "=ROUND(AVERAGE(B2:D2),0)"],
+  ["光熱費", 12800, 11200, 9600, "=SUM(B3:D3)", "=ROUND(AVERAGE(B3:D3),0)"],
+  ["通信費", 8500, 8500, 8500, "=SUM(B4:D4)", "=ROUND(AVERAGE(B4:D4),0)"],
+  ["日用品", 5400, 6200, 4800, "=SUM(B5:D5)", "=ROUND(AVERAGE(B5:D5),0)"],
+  ["交際費", 15000, 8000, 21000, "=SUM(B6:D6)", "=ROUND(AVERAGE(B6:D6),0)"],
+  ["合計", "=SUM(B2:B6)", "=SUM(C2:C6)", "=SUM(D2:D6)", "=SUM(E2:E6)"],
+  [],
+  ["予算", 90000, "", "", "", ""],
+  ["判定", '=IF(B7<=$B$9,"予算内","オーバー")', '=IF(C7<=$B$9,"予算内","オーバー")', '=IF(D7<=$B$9,"予算内","オーバー")'],
+];
+
+/* =====================================================================
+   アプリ本体
+   ===================================================================== */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("celldojo." + k); return v ? JSON.parse(v) : d; } catch (_) { return d; } },
+  set(k, v) { try { localStorage.setItem("celldojo." + k, JSON.stringify(v)); } catch (_) { /* 保存できない環境では何もしない */ } },
+};
+let progress = store.get("progress", {});
+
+const app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, 2400);
+}
+
+function expandTargets(lesson) {
+  const out = [];
+  for (const t of lesson.targets) {
+    const [a, b] = t.range.split(":");
+    const s = parseAddr(a), e = parseAddr(b || a);
+    for (let r = s.r; r <= e.r; r++) for (let c = s.c; c <= e.c; c++)
+      out.push({ ref: addr(c, r), answer: shiftFormula(t.answer, r - s.r, c - s.c), mustUse: t.mustUse });
+  }
+  return out;
+}
+
+const ERR_HELP = {
+  "#NAME?": "関数名やセル番地のつづり、文字を \" \" で囲み忘れていないかを確認しましょう。",
+  "#VALUE!": "文字が入ったセルを計算に使っていないか確認しましょう。",
+  "#DIV/0!": "0 や空のセルで割り算をしています。",
+  "#N/A": "探している値が見つかりません。範囲や FALSE の指定を確認しましょう。",
+  "#REF!": "存在しないセルを参照しています。",
+  "#ERROR!": "数式の書き方に誤りがあります。かっこの数やカンマを確認しましょう。",
+  "#CIRC!": "自分自身のセルを参照しています（循環参照）。",
+};
+
+function setNav(name) {
+  document.querySelectorAll("[data-nav]").forEach(a => {
+    if (a.dataset.nav === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+}
+
+/* ---- ホーム ---- */
+function renderHome() {
+  setNav("lessons");
+  const levels = ["初級", "中級"];
+  const sub = { 初級: "数式・基本関数・参照", 中級: "条件分岐・集計・検索・文字列" };
+  app.innerHTML = `
+    <section class="intro">
+      <div class="eyebrow">EXCEL を手を動かして覚える</div>
+      <h1>ブラウザの中のシートで、関数を1つずつ。</h1>
+      <p>各レッスンは「解説を読む → 黄色のセルに数式を入れる → 答え合わせ」の3ステップ。Excel がなくても、本物と同じ書き方で練習できます。</p>
+    </section>
+    ${levels.map(lv => {
+      const ls = LESSONS.filter(l => l.level === lv);
+      const done = ls.filter(l => progress[l.id]).length;
+      return `
+      <section class="level">
+        <div class="level-head">
+          <h2>${lv}<small>${sub[lv]}</small></h2>
+          <div class="meter"><i><u style="width:${(done / ls.length) * 100}%"></u></i>${done} / ${ls.length} 完了</div>
+        </div>
+        <div class="cards">
+          ${ls.map((l, i) => `
+            <button type="button" class="card${progress[l.id] ? " done" : ""}" data-lesson="${l.id}">
+              <span class="no">${progress[l.id] ? "✓" : String(i + 1).padStart(2, "0")}</span>
+              <h3>${esc(l.title)}</h3>
+              <p>${esc(l.summary)}<br><span class="fx">${esc(l.fx)}</span></p>
+            </button>`).join("")}
+        </div>
+      </section>`;
+    }).join("")}
+    <div class="side-links">
+      <a href="#quiz"><b>確認クイズ</b><span>初級・中級 各10問。覚えたことをチェック</span></a>
+      <a href="#practice"><b>自由練習シート</b><span>家計簿のサンプルを自由に書き換えて試す</span></a>
+      <a href="#reference"><b>関数一覧とショートカット</b><span>書き方を忘れたときの早見表</span></a>
+    </div>`;
+  app.querySelectorAll("[data-lesson]").forEach(b => b.addEventListener("click", () => { location.hash = "lesson-" + b.dataset.lesson; }));
+}
+
+/* ---- レッスン ---- */
+function renderLesson(id) {
+  const lesson = LESSONS.find(l => l.id === id);
+  if (!lesson) { renderHome(); return; }
+  setNav("lessons");
+  const idx = LESSONS.indexOf(lesson);
+  const levelList = LESSONS.filter(l => l.level === lesson.level);
+  const next = LESSONS[idx + 1];
+  const targets = expandTargets(lesson);
+  app.innerHTML = `
+    <button type="button" class="back" id="back">← レッスン一覧</button>
+    <div class="lesson">
+      <div class="lesson-text">
+        <div><span class="chip">${lesson.level} ${levelList.indexOf(lesson) + 1} / ${levelList.length}</span></div>
+        <h1>${esc(lesson.title)}</h1>
+        <div class="explain">${lesson.explain}</div>
+        <div class="task"><div class="eyebrow">やってみよう</div><p>${lesson.task}</p></div>
+        <details><summary>ヒント</summary><div>${lesson.hint}</div></details>
+        <details><summary>答えの数式を見る</summary><div>${lesson.targets.map(t => `<div><code>${esc(t.range.split(":")[0])}</code>：<code>${esc(t.answer)}</code>${t.range.includes(":") ? `（${esc(t.range.split(":")[1])} までコピー）` : ""}</div>`).join("")}
+          <p style="margin:6px 0 0;color:var(--muted)">同じ結果になれば、別の書き方でも正解です。</p></div></details>
+      </div>
+      <div class="lesson-work">
+        <div id="sheet"></div>
+        <div class="actions">
+          <button type="button" class="btn primary" id="check">答え合わせ</button>
+          <button type="button" class="btn" id="reset">最初からやり直す</button>
+        </div>
+        <div id="feedback" aria-live="polite"></div>
+      </div>
+    </div>`;
+  document.getElementById("back").addEventListener("click", () => { location.hash = "lessons"; });
+  const fb = document.getElementById("feedback");
+  const sheet = new SheetUI(document.getElementById("sheet"), "lesson-" + id, { onChange: () => { fb.innerHTML = ""; } });
+  const load = () => sheet.load({ ...lesson.sheet, targets: targets.map(t => t.ref) });
+  load();
+
+  document.getElementById("reset").addEventListener("click", () => { load(); fb.innerHTML = ""; });
+  document.getElementById("check").addEventListener("click", () => {
+    sheet.commit();
+    const eng = sheet.engine();
+    const probs = [];
+    sheet.marks = {};
+    for (const t of targets) {
+      const raw = sheet.cells[t.ref];
+      let msg = null;
+      if (!raw) msg = `${t.ref} がまだ空です。`;
+      else if (raw[0] !== "=") msg = `${t.ref} に値が直接入力されています。「=」から始まる数式で求めましょう。`;
+      else {
+        const v = eng.value(t.ref);
+        const want = new Engine({ ...sheet.cells, [t.ref]: t.answer }).value(t.ref);
+        const upper = raw.toUpperCase();
+        const missing = (t.mustUse || lesson.mustUse || []).filter(f => !new RegExp("(^|[^A-Z.])" + f + "\\(").test(upper));
+        if (isErr(v)) msg = `${t.ref} が ${v.err} になっています。${ERR_HELP[v.err] || ""}`;
+        else if (!sameValue(v, want)) msg = `${t.ref} の結果が「${display(v)}」になっています（正しい結果：${display(want)}）。`;
+        else if (missing.length) msg = `${t.ref} は結果は合っていますが、このレッスンでは ${missing.join("・")} を使って求めてみましょう。`;
+      }
+      sheet.marks[t.ref] = msg ? "bad" : "good";
+      if (msg) probs.push(msg);
+    }
+    sheet.render();
+    if (!probs.length) {
+      const first = !progress[lesson.id];
+      progress[lesson.id] = true;
+      store.set("progress", progress);
+      fb.innerHTML = `<div class="feedback ok"><b>正解です。</b>
+        ${lesson.after ? `<span>${lesson.after}</span>` : ""}
+        ${first ? `<span>「${esc(lesson.title)}」を完了しました。</span>` : ""}
+        <div class="actions" style="margin-top:6px">${next ? `<button type="button" class="btn primary" id="next">次へ：${esc(next.title)} →</button>` : `<button type="button" class="btn primary" id="next">全レッスン完了！ 確認クイズへ →</button>`}</div></div>`;
+      document.getElementById("next").addEventListener("click", () => { location.hash = next ? "lesson-" + next.id : "quiz"; });
+    } else {
+      fb.innerHTML = `<div class="feedback ng"><b>もう少しです。</b><ul>${probs.slice(0, 4).map(p => `<li>${esc(p)}</li>`).join("")}${probs.length > 4 ? `<li>ほか ${probs.length - 4} か所</li>` : ""}</ul>
+        ${lesson.ngHint ? `<span>${lesson.ngHint}</span>` : ""}</div>`;
+    }
+  });
+}
+
+/* ---- クイズ ---- */
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function renderQuiz(level) {
+  setNav("quiz");
+  level = level || "初級";
+  const qs = shuffle(QUIZ[level]).map(q => ({ ...q, order: shuffle(q.c.map((_, i) => i)) }));
+  let i = 0, score = 0;
+  const best = store.get("quizbest", {});
+  app.innerHTML = `
+    <div class="quiz">
+      <div class="page-head"><h1>確認クイズ</h1><p>4択 × 10問。解説を読んで、わからなかったところはレッスンに戻りましょう。</p></div>
+      <div class="quiz-pick">${["初級", "中級"].map(l => `<button type="button" class="btn${l === level ? " primary" : ""}" data-level="${l}">${l}${best[l] != null ? `（最高 ${best[l]}/10）` : ""}</button>`).join("")}</div>
+      <div id="qbox"></div>
+    </div>`;
+  app.querySelectorAll("[data-level]").forEach(b => b.addEventListener("click", () => renderQuiz(b.dataset.level)));
+  const box = document.getElementById("qbox");
+  function show() {
+    if (i >= qs.length) {
+      if (best[level] == null || score > best[level]) { best[level] = score; store.set("quizbest", best); }
+      const msg = score === 10 ? "全問正解です。" : score >= 7 ? "よくできました。間違えた問題の解説を見直しておきましょう。" : "レッスンに戻って、もう一度挑戦してみましょう。";
+      box.innerHTML = `<div class="qcard"><div class="qhead"><span>${level}の結果</span></div>
+        <div><span class="score">${score}</span> / ${qs.length} 問正解</div><p style="margin:0">${msg}</p>
+        <div class="actions"><button type="button" class="btn primary" id="retry">もう一度</button><a class="btn" href="#lessons" style="text-decoration:none">レッスンへ</a></div></div>`;
+      document.getElementById("retry").addEventListener("click", () => renderQuiz(level));
+      return;
+    }
+    const q = qs[i];
+    box.innerHTML = `<div class="qcard">
+      <div class="qhead"><span>${level} 第${i + 1}問</span><span>${score} 問正解</span></div>
+      <div class="qtext">${esc(q.q)}</div>
+      <div class="choices">${q.order.map(k => `<button type="button" class="choice" data-k="${k}">${esc(q.c[k])}</button>`).join("")}</div>
+      <div id="qexp"></div></div>`;
+    box.querySelectorAll(".choice").forEach(btn => btn.addEventListener("click", () => {
+      const k = +btn.dataset.k, ok = k === q.a;
+      if (ok) score++;
+      box.querySelectorAll(".choice").forEach(b => { b.disabled = true; if (+b.dataset.k === q.a) b.classList.add("right"); });
+      if (!ok) btn.classList.add("wrong");
+      document.getElementById("qexp").innerHTML = `<div class="qexp"><b>${ok ? "正解" : "不正解"}</b>　${esc(q.e)}
+        <div class="actions" style="margin-top:10px"><button type="button" class="btn primary" id="qnext">${i + 1 < qs.length ? "次の問題" : "結果を見る"}</button></div></div>`;
+      const nb = document.getElementById("qnext");
+      nb.addEventListener("click", () => { i++; show(); });
+      nb.focus();
+    }));
+  }
+  show();
+}
+
+/* ---- 自由練習 ---- */
+function renderPractice() {
+  setNav("practice");
+  app.innerHTML = `
+    <div class="page-head"><h1>自由練習シート</h1>
+      <p>サンプルの家計簿が入っています。数字を書き換えたり、新しい数式を足したりして自由に試してください。内容はこのブラウザに保存されます。</p></div>
+    <div id="psheet"></div>
+    <div class="actions" style="margin-top:12px">
+      <button type="button" class="btn" id="psample">サンプルに戻す</button>
+      <button type="button" class="btn" id="pclear">すべて消す</button>
+    </div>`;
+  const sheet = new SheetUI(document.getElementById("psheet"), "practice", { onChange: () => store.set("practice", sheet.cells) });
+  sheet.root.querySelector(".legend").remove();
+  sheet.load({ data: PRACTICE_SAMPLE, cols: 8, rows: 20, sel: "B11" });
+  const saved = store.get("practice", null);
+  if (saved) sheet.setCells(saved);
+  document.getElementById("psample").addEventListener("click", () => { sheet.load({ data: PRACTICE_SAMPLE, cols: 8, rows: 20, sel: "B11" }); store.set("practice", null); toast("サンプルに戻しました"); });
+  document.getElementById("pclear").addEventListener("click", () => { sheet.setCells({}); sheet.headers = new Set(); sheet.render(); store.set("practice", {}); toast("シートを空にしました"); });
+}
+
+/* ---- 関数一覧 ---- */
+function renderReference() {
+  setNav("reference");
+  app.innerHTML = `
+    <div class="page-head"><h1>関数一覧とショートカット</h1><p>このアプリで練習できる関数の早見表です。「例」は自由練習シートにそのまま貼り付けて試せます。</p></div>
+    ${REFERENCE.map(g => `
+      <section class="ref-group"><h2>${g.group}</h2>
+        <div class="boxed"><table class="ref-table">
+          <thead><tr><th>関数</th><th>書き方</th><th>働き</th><th>例</th><th>レベル</th></tr></thead>
+          <tbody>${g.items.map(([n, s, d, ex, lv]) => `<tr><td>${esc(n)}</td><td class="mono">${esc(s)}</td><td>${esc(d)}</td><td class="mono">${esc(ex)}</td><td>${lv}</td></tr>`).join("")}</tbody>
+        </table></div></section>`).join("")}
+    <section class="ref-group"><h2>覚えておきたいショートカット（Windows）</h2>
+      <div class="boxed"><table class="ref-table">
+        <thead><tr><th>キー</th><th>操作</th></tr></thead>
+        <tbody>${SHORTCUTS.map(([k, d]) => `<tr><td>${k.split(" + ").map(x => x.includes("/") ? x.split(" / ").map(y => `<kbd>${esc(y)}</kbd>`).join(" / ") : `<kbd>${esc(x)}</kbd>`).join(" + ")}</td><td>${esc(d)}</td></tr>`).join("")}</tbody>
+      </table></div>
+      <p style="margin:0;color:var(--muted);font-size:.85rem">Mac では Ctrl の代わりに ⌘（command）を使うものが多くあります。</p></section>`;
+}
+
+/* ---- ルーティング ---- */
+function route() {
+  const h = location.hash.replace("#", "");
+  window.scrollTo(0, 0);
+  if (h.startsWith("lesson-")) renderLesson(h.slice(7));
+  else if (h === "quiz") renderQuiz();
+  else if (h === "practice") renderPractice();
+  else if (h === "reference") renderReference();
+  else renderHome();
+}
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
