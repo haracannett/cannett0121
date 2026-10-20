@@ -105,7 +105,7 @@ h1, h2, h3 { line-height: 1.35; text-wrap: balance; margin: 0; }
 
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
 .card {
-  display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: start;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; align-items: start; align-content: start;
   text-align: left; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
   cursor: pointer; transition: border-color .15s, transform .15s;
 }
@@ -118,7 +118,8 @@ h1, h2, h3 { line-height: 1.35; text-wrap: balance; margin: 0; }
 .card.done .no { background: var(--ok); color: var(--surface); border-color: var(--ok); }
 .card h3 { font-size: 1rem; font-weight: 700; }
 .card p { margin: 0; font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
-.card .fx { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); }
+.card > * { min-width: 0; }
+.card .fx { display: block; margin-top: 4px; font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); overflow-wrap: anywhere; line-height: 1.5; }
 
 .side-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 40px; }
 .side-links a {
@@ -1506,7 +1507,7 @@ function renderHome() {
             <button type="button" class="card${progress[l.id] ? " done" : ""}" data-lesson="${l.id}">
               <span class="no">${progress[l.id] ? "✓" : String(i + 1).padStart(2, "0")}</span>
               <h3>${esc(l.title)}</h3>
-              <p>${esc(l.summary)}<br><span class="fx">${esc(l.fx)}</span></p>
+              <p>${esc(l.summary)}<span class="fx">${esc(l.fx)}</span></p>
             </button>`).join("")}
         </div>
       </section>`;
