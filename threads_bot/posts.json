@@ -1,0 +1,20 @@
+{
+  "posts": [
+    {
+      "id": "yuzu-lime-name-gap",
+      "scheduled_at": "2026-11-03T20:00:00+09:00",
+      "text": "左から「ゆず」と「ライム」です。\n\nよく「色と名前が合ってない」と言われます。\n\n知ってます。",
+      "image_url": null
+    },
+    {
+      "id": "lime-tissue-culprit",
+      "scheduled_at": "2026-11-05T20:00:00+09:00",
+      "text": "帰宅したらティッシュが部屋中に散らばってました。\n\nゆず「わたしじゃないです」\nライム「……」",
+      "image_url": null,
+      "affiliate": {
+        "text": "【PR】ライムのいたずら対策に使っているティッシュケース",
+        "url": "https://example.com/replace-with-your-affiliate-link"
+      }
+    }
+  ]
+}
