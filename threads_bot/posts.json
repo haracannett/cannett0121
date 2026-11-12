@@ -45,6 +45,16 @@
       "scheduled_at": "2026-11-26T20:00:00+09:00",
       "text": "トリマーさんから写真が届きました。\n\nカット中のゆずです。\n\nあごを支えてもらって、寝てます。",
       "image": "photos/yuzu-trimming-sleep.jpg"
+    },
+    {
+      "id": "yuzu-lime-cart-outing",
+      "scheduled_at": "2026-11-28T20:00:00+09:00",
+      "text": "お出かけ中のゆずとライム。\n\nカートから顔を出すゆずと、\nふちにあごを乗せて休むライム。\n\n同じカートでも、くつろぎ方がちがいます。",
+      "image": "photos/yuzu-lime-cart.jpg",
+      "affiliate": {
+        "text": "多頭飼いで使えるペットカートを探している方に（mila&louis）",
+        "url": "https://hb.afl.rakuten.co.jp/ichiba/59692d27.ef4e5da6.59692d28.4cb585ab/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Ffeiye%2Ftc-g10sj-khaki%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D"
+      }
     }
   ]
 }
