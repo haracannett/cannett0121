@@ -35,6 +35,12 @@
       "scheduled_at": "2026-11-24T20:00:00+09:00",
       "text": "ゆず（レッド）：甘えん坊\nライム（ブラック）：甘えん坊＋いたずら担当\n\n柑橘っぽさはゼロ。\n甘さは2匹とも100%です🍋",
       "image_url": null
+    },
+    {
+      "id": "yuzu-trimming-sleep",
+      "scheduled_at": "2026-11-26T20:00:00+09:00",
+      "text": "トリミング中のゆず。\n\nあごを支えてもらって\n\n寝てます。",
+      "image": "photos/yuzu-trimming-sleep.jpg"
     }
   ]
 }
