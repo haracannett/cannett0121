@@ -51,5 +51,14 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add threads_bot/state.json
             git commit -m "Threads 投稿の記録を更新"
-            git push
+            # 記録を取りこぼすと、次の回に同じ投稿をもう一度出してしまう。
+            # ほかの更新とぶつかったときは、やり直して必ず残す。
+            for attempt in 1 2 3; do
+              if git push; then
+                exit 0
+              fi
+              git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            done
+            echo "::error::投稿の記録を保存できませんでした。threads_bot/state.json を手で確認してください。"
+            exit 1
           fi
