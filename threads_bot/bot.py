@@ -12,6 +12,8 @@ PR表記付きのアフィリエイトリンクを書き込む。
 環境変数:
     THREADS_ACCESS_TOKEN  長期アクセストークン（必須。check では不要）
     THREADS_USER_ID       Threads のユーザーID（省略時は "me"）
+    GITHUB_REPOSITORY     写真の公開URLに使うリポジトリ（GitHub Actions が自動で設定）
+    GITHUB_SHA            写真の公開URLに使うコミット（同上。なければ main）
 """
 
 import argparse
@@ -30,6 +32,7 @@ API_BASE = "https://graph.threads.net/v1.0"
 HERE = Path(__file__).resolve().parent
 POSTS_FILE = HERE / "posts.json"
 STATE_FILE = HERE / "state.json"
+DEFAULT_REPOSITORY = "haracannett/cannett0121"
 
 MAX_TEXT_LENGTH = 500
 MAX_LINKS = 5
@@ -39,6 +42,8 @@ PUBLISH_WAIT_SECONDS = 30
 PR_LABEL = "【PR】"
 PR_MARKERS = ("PR", "広告", "プロモーション", "アフィリエイト")
 URL_PATTERN = re.compile(r"https?://\S+")
+IMAGE_SUFFIXES = (".jpg", ".jpeg", ".png")
+MAX_IMAGE_BYTES = 8 * 1024 * 1024
 
 
 class ThreadsError(Exception):
@@ -76,6 +81,57 @@ def affiliate_reply_text(affiliate):
     return f"{text}\n{url}" if text else f"{PR_LABEL}\n{url}"
 
 
+def jpeg_has_gps(path):
+    """JPEG の Exif に位置情報（GPS）が入っていれば True。"""
+    data = path.read_bytes()
+    if data[:2] != b"\xff\xd8":
+        return False
+    pos = 2
+    while pos + 4 <= len(data) and data[pos] == 0xFF:
+        marker = data[pos + 1]
+        if marker in (0xD9, 0xDA):  # 画像の終わり・画像データの始まり
+            break
+        length = int.from_bytes(data[pos + 2:pos + 4], "big")
+        segment = data[pos + 4:pos + 2 + length]
+        if marker == 0xE1 and segment.startswith(b"Exif\x00\x00"):
+            tiff = segment[6:]
+            order = "little" if tiff[:2] == b"II" else "big"
+            ifd = int.from_bytes(tiff[4:8], order)
+            count = int.from_bytes(tiff[ifd:ifd + 2], order)
+            for i in range(count):
+                entry = ifd + 2 + i * 12
+                if int.from_bytes(tiff[entry:entry + 2], order) == 0x8825:  # GPS 情報へのポインタ
+                    return True
+        pos += 2 + length
+    return False
+
+
+def image_url_for(post):
+    """投稿に付ける写真の公開URL。写真がなければ None。"""
+    if post.get("image_url"):
+        return post["image_url"]
+    if not post.get("image"):
+        return None
+    repo = os.environ.get("GITHUB_REPOSITORY", DEFAULT_REPOSITORY)
+    ref = os.environ.get("GITHUB_SHA", "main")
+    path = urllib.parse.quote(f"{HERE.name}/{post['image']}")
+    return f"https://raw.githubusercontent.com/{repo}/{ref}/{path}"
+
+
+def validate_image(pid, image):
+    path = HERE / image
+    if not path.is_file():
+        return [f"{pid}: 写真 {image} が見つかりません（threads_bot フォルダからの場所を書きます。例: photos/yuzu.jpg）"]
+    problems = []
+    if path.suffix.lower() not in IMAGE_SUFFIXES:
+        problems.append(f"{pid}: 写真は JPEG か PNG にしてください: {image}")
+    if path.stat().st_size > MAX_IMAGE_BYTES:
+        problems.append(f"{pid}: 写真が8MBを超えています: {image}")
+    if path.suffix.lower() in (".jpg", ".jpeg") and jpeg_has_gps(path):
+        problems.append(f"{pid}: 写真 {image} に位置情報が入っています。自宅の場所がわかってしまうので、位置情報を消してから入れ直してください")
+    return problems
+
+
 def validate_post(post):
     """投稿1件の問題点を文字列のリストで返す。"""
     problems = []
@@ -105,8 +161,12 @@ def validate_post(post):
             problems.append(f"{pid}: {label}のリンクが{MAX_LINKS}個を超えています")
 
     image_url = post.get("image_url")
-    if image_url and not image_url.startswith("https://"):
+    if image_url and post.get("image"):
+        problems.append(f"{pid}: image と image_url はどちらか一方だけにしてください")
+    elif image_url and not image_url.startswith("https://"):
         problems.append(f"{pid}: image_url は公開されている https:// のURLにしてください")
+    elif post.get("image"):
+        problems += validate_image(pid, post["image"])
     return problems
 
 
@@ -204,11 +264,14 @@ def run_post(client, posts, state, now, dry_run=False, log=print):
     record = state.setdefault("posted", {}).get(post["id"])
 
     if kind == "post":
+        image_url = image_url_for(post)
         log(f"投稿します: {post['id']}")
         if dry_run:
             log(post["text"])
+            if image_url:
+                log(f"写真: {image_url}")
         else:
-            media_id = client.publish(post["text"], image_url=post.get("image_url"))
+            media_id = client.publish(post["text"], image_url=image_url)
             record = {"media_id": media_id, "posted_at": now.isoformat()}
             state["posted"][post["id"]] = record
             log(f"公開しました: media_id={media_id}")

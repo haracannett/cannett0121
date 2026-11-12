@@ -1,5 +1,9 @@
+import os
+import tempfile
 import unittest
 from datetime import datetime, timezone
+from pathlib import Path
+from unittest import mock
 
 import bot
 
@@ -54,6 +58,46 @@ class ValidateTest(unittest.TestCase):
     def test_rejects_duplicate_ids(self):
         posts = [make_post("a", "2026-11-03T20:00:00+09:00")] * 2
         self.assertTrue(any("重複" in p for p in bot.validate_all(posts)))
+
+
+def make_jpeg(with_gps):
+    tag = 0x8825 if with_gps else 0x010F  # GPS 情報 / カメラのメーカー
+    ifd = (1).to_bytes(2, "little") + tag.to_bytes(2, "little") + bytes(10) + bytes(4)
+    tiff = b"II*\x00" + (8).to_bytes(4, "little") + ifd
+    app1 = b"Exif\x00\x00" + tiff
+    return b"\xff\xd8\xff\xe1" + (len(app1) + 2).to_bytes(2, "big") + app1 + b"\xff\xd9"
+
+
+class ImageTest(unittest.TestCase):
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.dir = Path(tmp.name)
+        patcher = mock.patch.object(bot, "HERE", self.dir)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        (self.dir / "photos").mkdir()
+
+    def test_accepts_photo_without_gps(self):
+        (self.dir / "photos" / "ok.jpg").write_bytes(make_jpeg(with_gps=False))
+        self.assertEqual(bot.validate_image("a", "photos/ok.jpg"), [])
+
+    def test_rejects_photo_with_gps(self):
+        (self.dir / "photos" / "home.jpg").write_bytes(make_jpeg(with_gps=True))
+        self.assertTrue(any("位置情報" in p for p in bot.validate_image("a", "photos/home.jpg")))
+
+    def test_rejects_missing_photo(self):
+        self.assertTrue(bot.validate_image("a", "photos/none.jpg"))
+
+    def test_builds_public_url_from_commit(self):
+        env = {"GITHUB_REPOSITORY": "owner/repo", "GITHUB_SHA": "abc123"}
+        with mock.patch.dict(os.environ, env):
+            url = bot.image_url_for({"image": "photos/ゆず.jpg"})
+        self.assertTrue(url.startswith("https://raw.githubusercontent.com/owner/repo/abc123/"))
+        self.assertTrue(url.endswith("/photos/%E3%82%86%E3%81%9A.jpg"))
+
+    def test_image_url_takes_priority(self):
+        self.assertEqual(bot.image_url_for({"image_url": "https://x.test/a.jpg"}), "https://x.test/a.jpg")
 
 
 class RunPostTest(unittest.TestCase):

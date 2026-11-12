@@ -19,7 +19,7 @@ GitHub Actions で毎時動くので、サーバーは要りません。Python �
   "id": "lime-tissue-culprit",
   "scheduled_at": "2026-11-05T20:00:00+09:00",
   "text": "帰宅したらティッシュが部屋中に散らばってました。\n\nゆず「わたしじゃないです」\nライム「……」",
-  "image_url": "https://example.com/photo.jpg",
+  "image": "photos/lime-tissue.jpg",
   "affiliate": {
     "text": "【PR】ライムのいたずら対策に使っているティッシュケース",
     "url": "https://自分のアフィリエイトリンク"
@@ -32,8 +32,17 @@ GitHub Actions で毎時動くので、サーバーは要りません。Python �
 | `id` | 投稿ごとに違う名前。公開後に変えると、別の投稿として再公開されます |
 | `scheduled_at` | 公開する日時。最後に `+09:00`（日本時間）を必ず付けます |
 | `text` | 本文。500文字まで。改行は `\n` |
-| `image_url` | 写真を付けるときの URL。インターネットに公開されている `https://` の画像である必要があります。なければ `null` |
+| `image` | 写真を付けるときの、`threads_bot` フォルダからの場所（例: `photos/lime-tissue.jpg`）。写真がなければ書かないか `null` |
+| `image_url` | 写真がほかのサイトにあるときの公開URL。`image` とどちらか一方だけ |
 | `affiliate` | 省略可。`text` に「PR」「広告」などの表記がなければ、先頭に自動で「【PR】」を付けます |
+
+### 写真の置き方
+
+1. 写真（JPEG か PNG、8MBまで）を `threads_bot/photos/` に入れます。
+2. 投稿の `image` に `photos/ファイル名` を書きます。
+3. 投稿するときは、このリポジトリの公開URL（raw.githubusercontent.com）を自動で作って Threads に渡します。
+
+このリポジトリは公開されているので、入れた写真と `posts.json` の予定の投稿は、投稿前でも誰でも見られます。また、位置情報（GPS）が入った JPEG は、自宅の場所がわかってしまうのでチェックで止まります。
 
 保存したら、手元で確認できます。
 
