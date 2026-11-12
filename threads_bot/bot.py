@@ -81,6 +81,17 @@ def affiliate_reply_text(affiliate):
     return f"{text}\n{url}" if text else f"{PR_LABEL}\n{url}"
 
 
+def clean_token(raw):
+    """シークレットに貼り付けたトークンから、余計な空白・引用符・JSON を取り除く。"""
+    token = (raw or "").strip()
+    if token.startswith("{"):
+        try:
+            token = json.loads(token).get("access_token", "")
+        except ValueError:
+            pass
+    return token.strip().strip('"').strip()
+
+
 def jpeg_has_gps(path):
     """JPEG の Exif に位置情報（GPS）が入っていれば True。"""
     data = path.read_bytes()
@@ -313,7 +324,7 @@ def main(argv=None):
         print(f"posts.json はOKです（{len(posts)}件）。")
         return 0
 
-    token = os.environ.get("THREADS_ACCESS_TOKEN")
+    token = clean_token(os.environ.get("THREADS_ACCESS_TOKEN"))
     if not token and not (args.command == "post" and args.dry_run):
         print("THREADS_ACCESS_TOKEN が設定されていません。", file=sys.stderr)
         return 1
