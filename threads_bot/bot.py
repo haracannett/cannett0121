@@ -223,6 +223,8 @@ class ThreadsClient:
         except urllib.error.HTTPError as e:
             body = e.read().decode(errors="replace")
             raise ThreadsError(f"{method} {path} が失敗しました（HTTP {e.code}）: {body}") from None
+        except urllib.error.URLError as e:
+            raise ThreadsError(f"{method} {path} で Threads に接続できませんでした: {e.reason}") from None
 
     def _wait_until_ready(self, container_id):
         time.sleep(self.wait)
@@ -248,6 +250,9 @@ class ThreadsClient:
         self._wait_until_ready(container["id"])
         published = self._request("POST", f"{self.user_id}/threads_publish", {"creation_id": container["id"]})
         return published["id"]
+
+    def me(self):
+        return self._request("GET", "me", {"fields": "id,username"})
 
     def refresh_token(self):
         return self._request("GET", "refresh_access_token", {"grant_type": "th_refresh_token"})
@@ -321,6 +326,15 @@ def main(argv=None):
             Path(args.token_file).write_text(result["access_token"], encoding="utf-8")
         print(f"トークンを更新しました（有効期限: 約{days}日）。")
         return 0
+
+    if args.dry_run and token:
+        # 投稿はせず、トークンで接続できるかだけ確かめる
+        try:
+            account = client.me()
+        except ThreadsError as e:
+            print(f"トークンで接続できませんでした。トークンが正しいか確認してください。\n{e}", file=sys.stderr)
+            return 1
+        print(f"トークンOK: @{account.get('username')} として接続できました。")
 
     state = load_json(STATE_FILE, {"posted": {}})
     try:
