@@ -2,19 +2,39 @@
   "posts": [
     {
       "id": "yuzu-lime-name-gap",
-      "scheduled_at": "2026-11-03T20:00:00+09:00",
+      "scheduled_at": "2026-11-14T20:00:00+09:00",
       "text": "左から「ゆず」と「ライム」です。\n\nよく「色と名前が合ってない」と言われます。\n\n知ってます。",
       "image_url": null
     },
     {
+      "id": "yuzu-lime-lap-fight",
+      "scheduled_at": "2026-11-16T20:00:00+09:00",
+      "text": "ソファに座った瞬間\n\n右ひざ：ゆず\n左ひざ：ライム\n\nトイレに行きたいです。",
+      "image_url": null
+    },
+    {
       "id": "lime-tissue-culprit",
-      "scheduled_at": "2026-11-05T20:00:00+09:00",
-      "text": "帰宅したらティッシュが部屋中に散らばってました。\n\nゆず「わたしじゃないです」\nライム「……」",
-      "image_url": null,
-      "affiliate": {
-        "text": "【PR】ライムのいたずら対策に使っているティッシュケース",
-        "url": "https://example.com/replace-with-your-affiliate-link"
-      }
+      "scheduled_at": "2026-11-18T20:00:00+09:00",
+      "text": "帰宅したらティッシュが部屋中に散らばってました。\n\nゆず「わたしじゃないです」\nライム「……」\n\nライムの口に、ティッシュがついてました。",
+      "image_url": null
+    },
+    {
+      "id": "yuzu-lime-photo-gap",
+      "scheduled_at": "2026-11-20T20:00:00+09:00",
+      "text": "2匹並べて写真を撮ったら\n\nゆず：ぬいぐるみ\nライム：ブラックホール",
+      "image_url": null
+    },
+    {
+      "id": "lime-scolded-amae",
+      "scheduled_at": "2026-11-22T20:00:00+09:00",
+      "text": "いたずらしたライムを叱ったら\n\n反省するどころか甘えてきました。\n\n叱った方が負けです。",
+      "image_url": null
+    },
+    {
+      "id": "yuzu-lime-profile",
+      "scheduled_at": "2026-11-24T20:00:00+09:00",
+      "text": "ゆず（レッド）：甘えん坊\nライム（ブラック）：甘えん坊＋いたずら担当\n\n柑橘っぽさはゼロ。\n甘さは2匹とも100%です🍋",
+      "image_url": null
     }
   ]
 }
