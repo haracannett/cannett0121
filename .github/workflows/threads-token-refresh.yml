@@ -1,0 +1,40 @@
+name: Threads トークン更新
+
+on:
+  schedule:
+    # 毎月1日と15日（長期トークンの有効期限は60日）
+    - cron: "0 0 1,15 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: トークンを更新してシークレットを書き換える
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          # リポジトリのシークレットを書き換える権限を持つ個人アクセストークン
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -z "$THREADS_ACCESS_TOKEN" ]; then
+            echo "::notice::THREADS_ACCESS_TOKEN が未設定のため、スキップしました。"
+            exit 0
+          fi
+          token_file="$RUNNER_TEMP/threads_token"
+          python threads_bot/bot.py refresh --token-file "$token_file"
+          if [ -n "$GH_TOKEN" ]; then
+            gh secret set THREADS_ACCESS_TOKEN --repo "$GITHUB_REPOSITORY" < "$token_file"
+            echo "シークレット THREADS_ACCESS_TOKEN を更新しました。"
+          else
+            echo "::warning::GH_PAT が未設定のため、シークレットは書き換えていません。有効期限は延びていますが、トークン文字列が変わった場合は手動で更新してください。"
+          fi
+          rm -f "$token_file"

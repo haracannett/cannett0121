@@ -1,0 +1,55 @@
+name: Threads 自動投稿
+
+on:
+  schedule:
+    # 毎時5分に実行（GitHub の混雑で数分〜数十分遅れることがあります）
+    - cron: "5 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "投稿せずに内容だけ表示する"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+# 実行が重なって二重投稿しないようにする
+concurrency:
+  group: threads-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 投稿する
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            python threads_bot/bot.py post --dry-run
+          elif [ -z "$THREADS_ACCESS_TOKEN" ]; then
+            echo "::notice::THREADS_ACCESS_TOKEN が未設定のため、投稿をスキップしました。"
+          else
+            python threads_bot/bot.py post
+          fi
+
+      - name: 投稿の記録を保存
+        if: always()
+        run: |
+          if [ -n "$(git status --porcelain threads_bot/state.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add threads_bot/state.json
+            git commit -m "Threads 投稿の記録を更新"
+            git push
+          fi
