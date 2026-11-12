@@ -40,6 +40,18 @@ class AffiliateTextTest(unittest.TestCase):
         self.assertEqual(text, "#PR 愛用のおやつ\nhttps://example.com/a")
 
 
+class CleanTokenTest(unittest.TestCase):
+    def test_strips_quotes_and_spaces(self):
+        self.assertEqual(bot.clean_token(' "THAAabc"\n'), "THAAabc")
+
+    def test_reads_pasted_json(self):
+        pasted = '{"access_token":"THAAabc","token_type":"bearer","expires_in":5183944}'
+        self.assertEqual(bot.clean_token(pasted), "THAAabc")
+
+    def test_empty(self):
+        self.assertEqual(bot.clean_token(None), "")
+
+
 class ValidateTest(unittest.TestCase):
     def test_requires_timezone(self):
         problems = bot.validate_post(make_post("a", "2026-11-03T20:00:00"))
