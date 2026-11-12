@@ -22,7 +22,11 @@
       "id": "yuzu-lime-photo-gap",
       "scheduled_at": "2026-11-20T20:00:00+09:00",
       "text": "2匹を連れてドライブ中。\n\nゆず：テンション最高\nライム：……\n\nライムがどこにいるか、わかりますか？",
-      "image": "photos/yuzu-lime-drive.jpg"
+      "image": "photos/yuzu-lime-drive.jpg",
+      "affiliate": {
+        "text": "2匹が乗っているドライブベッドはこちらです（INULABO）",
+        "url": "https://hb.afl.rakuten.co.jp/ichiba/59690664.4fa7cae2.59690665.f963350f/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fk-digital%2Finb-db-l%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D"
+      }
     },
     {
       "id": "lime-scolded-amae",
