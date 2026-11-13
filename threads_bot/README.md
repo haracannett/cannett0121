@@ -38,7 +38,7 @@ GitHub Actions で毎時動くので、サーバーは要りません。Python �
 ```json
 {
   "id": "lime-tissue-culprit",
-  "scheduled_at": "2026-11-05T20:00:00+09:00",
+  "scheduled_at": "2026-11-05T12:00:00+09:00",
   "text": "帰宅したらティッシュが部屋中に散らばってました。\n\nゆず「わたしじゃないです」\nライム「……」",
   "image": "photos/lime-tissue.jpg",
   "affiliate": {
