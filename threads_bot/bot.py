@@ -364,8 +364,25 @@ def settle_pending(client, posts, state, log=print, save=None):
 class ThreadsClient:
     def __init__(self, token, user_id="me", wait=PUBLISH_WAIT_SECONDS):
         self.token = token
-        self.user_id = user_id
+        # 空文字（GitHub のシークレットが未登録のとき環境変数が空で届く）も
+        # 「指定なし」として扱う。空のまま使うと、宛先が "/threads" になって
+        # 「Object with ID 'threads' does not exist」で必ず失敗する。
+        self.user_id = user_id or "me"
         self.wait = wait
+
+    def _uid(self):
+        """投稿の宛先に使うユーザーID。
+
+        未指定（"me"）のときは、トークンの持ち主の数字のIDを一度だけ問い合わせて
+        覚えておく。ここまでは何も送っていないので、失敗しても世には出ていない。
+        """
+        if self.user_id == "me":
+            found = self._request("GET", "me", {"fields": "id"})
+            uid = found.get("id")
+            if not uid:
+                raise ThreadsError("トークンの持ち主のIDを取得できませんでした。")
+            self.user_id = uid
+        return self.user_id
 
     def _request(self, method, path, params):
         params = {**params, "access_token": self.token}
@@ -416,12 +433,13 @@ class ThreadsClient:
             params["reply_to_id"] = reply_to_id
         kind = "reply" if reply_to_id else "post"
         # ここまでは下書きを作るだけなので、失敗しても世には出ていない。
-        container = self._request("POST", f"{self.user_id}/threads", params)
+        uid = self._uid()
+        container = self._request("POST", f"{uid}/threads", params)
         self._wait_until_ready(container["id"])
         # ここから先は、送ったあとに返事が来ないと「出たかどうか」が分からない。
         try:
             published = self._request(
-                "POST", f"{self.user_id}/threads_publish", {"creation_id": container["id"]}
+                "POST", f"{uid}/threads_publish", {"creation_id": container["id"]}
             )
         except ThreadsUnreachable as e:
             raise UnknownOutcome(str(e), container["id"], text, kind) from None
@@ -438,7 +456,7 @@ class ThreadsClient:
     def recent_posts(self, limit=25):
         """自分の最近の投稿。出たかどうかを本文で確かめるのに使う。"""
         data = self._request(
-            "GET", f"{self.user_id}/threads", {"fields": "id,text,timestamp", "limit": limit}
+            "GET", f"{self._uid()}/threads", {"fields": "id,text,timestamp", "limit": limit}
         )
         return data.get("data", [])
 
@@ -547,7 +565,7 @@ def main(argv=None):
     if not token and not (args.command == "post" and args.dry_run):
         print("THREADS_ACCESS_TOKEN が設定されていません。", file=sys.stderr)
         return 1
-    client = ThreadsClient(token or "", os.environ.get("THREADS_USER_ID", "me"))
+    client = ThreadsClient(token or "", os.environ.get("THREADS_USER_ID") or "me")
 
     if args.command == "refresh":
         result = client.refresh_token()
