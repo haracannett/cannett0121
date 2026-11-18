@@ -1,0 +1,23 @@
+name: Threads 権限確認
+
+# 手動で動かすだけ。トークンにどの権限があるかを調べる（投稿はしない・読むだけ）。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scopes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: トークンの権限を調べる
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+        run: python threads_bot/bot.py scopes
