@@ -114,6 +114,31 @@ def clean_token(raw):
     return token.strip().strip('"').strip()
 
 
+# 投稿とアフィリエイトのリプライに必要な権限
+REQUIRED_SCOPES = ("threads_basic", "threads_content_publish", "threads_manage_replies")
+
+
+def describe_scopes(result):
+    """debug_token の返事から、足りない権限を探して説明文と一緒に返す。"""
+    data = result.get("data", result)
+    scopes = list(data.get("scopes") or [])
+    missing = [s for s in REQUIRED_SCOPES if s not in scopes]
+    lines = [
+        "トークンは有効です。" if data.get("is_valid", True) else "トークンは無効です。",
+        "与えられている権限: " + (", ".join(scopes) if scopes else "（取得できませんでした）"),
+    ]
+    expires = data.get("expires_at")
+    if expires:
+        lines.append(
+            "有効期限: " + datetime.fromtimestamp(int(expires), timezone.utc).strftime("%Y-%m-%d")
+        )
+    if missing:
+        lines.append("足りない権限: " + ", ".join(missing))
+    else:
+        lines.append("必要な権限はそろっています（投稿・リプライとも出せます）。")
+    return "\n".join(lines), missing
+
+
 def jpeg_has_gps(path):
     """JPEG の Exif に位置情報（GPS）が入っていれば True。"""
     data = path.read_bytes()
@@ -466,6 +491,10 @@ class ThreadsClient:
     def refresh_token(self):
         return self._request("GET", "refresh_access_token", {"grant_type": "th_refresh_token"})
 
+    def inspect_token(self):
+        """このトークンに与えられている権限を調べる（読むだけ。投稿はしない）。"""
+        return self._request("GET", "debug_token", {"input_token": self.token})
+
 
 # ---------- コマンド ----------
 
@@ -550,6 +579,7 @@ def main(argv=None):
     sub.add_parser("check", help="posts.json を検証する")
     refresh_cmd = sub.add_parser("refresh", help="長期アクセストークンを更新する")
     refresh_cmd.add_argument("--token-file", help="新しいトークンを書き出すファイル（画面には表示しない）")
+    sub.add_parser("scopes", help="トークンの権限を調べる（投稿はしない）")
     args = parser.parse_args(argv)
 
     posts = load_json(POSTS_FILE, {"posts": []})["posts"]
@@ -566,6 +596,15 @@ def main(argv=None):
         print("THREADS_ACCESS_TOKEN が設定されていません。", file=sys.stderr)
         return 1
     client = ThreadsClient(token or "", os.environ.get("THREADS_USER_ID") or "me")
+
+    if args.command == "scopes":
+        try:
+            text, missing = describe_scopes(client.inspect_token())
+        except ThreadsError as e:
+            print(f"権限を調べられませんでした。\n{e}", file=sys.stderr)
+            return 1
+        print(text)
+        return 1 if missing else 0
 
     if args.command == "refresh":
         result = client.refresh_token()
