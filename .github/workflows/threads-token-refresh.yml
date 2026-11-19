@@ -47,9 +47,9 @@ jobs:
             gh secret set THREADS_ACCESS_TOKEN --repo "$GITHUB_REPOSITORY" < "$token_file"
             echo "シークレット THREADS_ACCESS_TOKEN を更新しました。"
           elif [ "$changed" = "1" ]; then
-            rm -f "$token_file"
-            echo "::error::トークンの文字列が変わりましたが、GH_PAT が未設定のため保存できませんでした。THREADS_ACCESS_TOKEN を手動で取り直して登録してください（運用メモ 第6章）。"
-            exit 1
+            # 保存してある文字列の期限も、更新のたびに延びることを確認済み（2026-11）。
+            # 保存できなくても止まらないので、赤く失敗させず、メモだけ残す。
+            echo "::notice::トークンの文字列は新しくなりましたが、GH_PAT が未設定のため保存していません。保存してある文字列の有効期限は延びているので、このままで問題ありません。"
           else
             echo "::notice::GH_PAT は未設定ですが、文字列が同じなので保存は不要です。"
           fi
