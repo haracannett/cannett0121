@@ -163,6 +163,16 @@
       "scheduled_at": "2027-01-03T12:00:00+09:00",
       "text": "運転中、うしろからずっと見てくる2匹。\n\n左：ゆず\n右：ライム\n\n2匹とも、舌を出して笑います。\n\n運転中なので、見返せません。",
       "image": "photos/yuzu-lime-drive-pair.jpg"
+    },
+    {
+      "id": "yuzu-heater",
+      "scheduled_at": "2027-01-05T12:00:00+09:00",
+      "text": "ヒーターを出した日から、\nゆずの定位置は、ここです。\n\nずっと、正面。\n動く気配は、ありません。\n\nあたたかいのが、\nいちばん大事なようです。",
+      "image": "photos/yuzu-heater.jpg",
+      "affiliate": {
+        "text": "床にしくマットを探している方に（weiwei）\n人間の赤ちゃん向けの商品です。商品ページに「物質検査済」と書かれています。",
+        "url": "https://hb.afl.rakuten.co.jp/ichiba/59dcfdfe.b6819ba4.59dcfdff.df7a63c8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fweiwei%2Fjm60b8%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D"
+      }
     }
   ]
 }
