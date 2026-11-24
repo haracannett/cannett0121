@@ -100,7 +100,11 @@
       "id": "lime-yuzu-sleeping",
       "scheduled_at": "2026-12-12T12:00:00+09:00",
       "text": "上：ライム\n下：ゆず\n\n起きているときは、ゆずが譲ってばかりなのに、\n寝ているときは、ライムが上に乗ります。\n\nどちらが強いのかは、まだ分かりません。",
-      "image": "photos/lime-yuzu-sleeping.jpg"
+      "image": "photos/lime-yuzu-sleeping.jpg",
+      "affiliate": {
+        "text": "洗えるペットベッドを探している方に（kkhome）\n商品名に「洗える」「丸型」と書かれています。サイズはXSからXXLまであります。",
+        "url": "https://hb.afl.rakuten.co.jp/ichiba/59e89ca9.89a68bc0.59e89caa.9f762956/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fkkhome%2Fjprtp-608866%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D"
+      }
     },
     {
       "id": "yuzu-lime-tatami-pair",
