@@ -138,7 +138,11 @@
       "id": "yuzu-yellow-scarf",
       "scheduled_at": "2026-12-26T12:00:00+09:00",
       "text": "黄色いスカーフをつけてもらって、\nまんざらでもない顔。\n\n似合うと分かっているタイプです。",
-      "image": "photos/yuzu-yellow-scarf.jpg"
+      "image": "photos/yuzu-yellow-scarf.jpg",
+      "affiliate": {
+        "text": "犬用のバンダナを探している方に（roundsheep）\n商品名に「バンダナ」「スカーフ」「よだれかけ」と書かれています。柄はペイズリーや和柄などです。",
+        "url": "https://hb.afl.rakuten.co.jp/ichiba/59e89f7e.cf02f580.59e89f7f.cb1047ea/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Froundsheep%2Fpets-0016%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D"
+      }
     },
     {
       "id": "yuzu-oldest-photo",
