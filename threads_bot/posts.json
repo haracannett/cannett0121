@@ -193,6 +193,30 @@
         "text": "床にしくマットを探している方に（weiwei）\n人間の赤ちゃん向けの商品です。商品ページに「物質検査済」と書かれています。",
         "url": "https://hb.afl.rakuten.co.jp/ichiba/59dcfdfe.b6819ba4.59dcfdff.df7a63c8/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fweiwei%2Fjm60b8%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D"
       }
+    },
+    {
+      "id": "lime-sofa-lookup",
+      "scheduled_at": "2027-01-07T12:00:00+09:00",
+      "text": "ソファの上から、こちらを見るライム。\n\n黒い犬は、遠くから撮ると顔が見えません。\nでも、近づいて撮ると、ちゃんと目があります。\n\nこのくらいの距離が、ちょうどいいようです。",
+      "image": "photos/lime-sofa-lookup.jpg"
+    },
+    {
+      "id": "yuzu-lime-sofa-pair",
+      "scheduled_at": "2027-01-09T12:00:00+09:00",
+      "text": "同じからし色の服で、ソファに並んだ2匹。\n\nゆず：座って、見上げる\nライム：伏せて、見上げる\n\n同じ服、同じ場所、同じ方向を見ているのに、\n姿勢だけちがいます。",
+      "image": "photos/yuzu-lime-sofa-pair.jpg"
+    },
+    {
+      "id": "yuzu-lime-car-window",
+      "scheduled_at": "2027-01-11T12:00:00+09:00",
+      "text": "同じ方向を見る、2匹。\n\n左：ゆず\n右：ライム\n\n窓の外に、何かを見つけたようです。\n私には、見えませんでした。",
+      "image": "photos/yuzu-lime-car-window.jpg"
+    },
+    {
+      "id": "lime-car-stare",
+      "scheduled_at": "2027-01-13T12:00:00+09:00",
+      "text": "ゆずだけではありません。\nライムも、運転中にずっと見てきます。\n\nこちらは、目が合っても、\nじっとしたままです。\n\n運転中なので、見返せません。",
+      "image": "photos/lime-car-stare.jpg"
     }
   ]
 }
