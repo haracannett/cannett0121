@@ -90,7 +90,11 @@
       "id": "yuzu-bench-five",
       "scheduled_at": "2026-12-10T12:00:00+09:00",
       "text": "同じベンチで、5枚撮りました。\n\n5枚とも、ちがう顔です。\n\n撮っているのは私だけで、\nゆずはたぶん何も考えていません。",
-      "image": "photos/yuzu-bench-five.jpg"
+      "image": "photos/yuzu-bench-five.jpg",
+      "affiliate": {
+        "text": "ペットの写真を撮るスタンドを探している方に（kissyougensen）\n商品名に「ペット写真撮影専用のスマホスタンド」と書かれています。",
+        "url": "https://hb.afl.rakuten.co.jp/ichiba/59e896e6.0a97c58a.59e896e7.ba669431/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fkissyougensen%2F1341%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D"
+      }
     },
     {
       "id": "lime-yuzu-sleeping",
