@@ -78,7 +78,11 @@
       "id": "lime-jump",
       "scheduled_at": "2026-12-06T12:00:00+09:00",
       "text": "黒い犬は、写真がうまく撮れません。\n\n暗いと顔が消えるし、\n明るくても目と鼻しか見えません。\n\nでも、走っているときは別です。\n4本の足がぜんぶ浮いてます。",
-      "image": "photos/lime-jump.jpg"
+      "image": "photos/lime-jump.jpg",
+      "affiliate": {
+        "text": "夜のお散歩で使う光る首輪を探している方に（petground）\nUSB充電式のLEDの首輪です（商品名より）。サイズはS・M・Lがあります。",
+        "url": "https://hb.afl.rakuten.co.jp/ichiba/59e898e9.62a76e84.59e898ea.4a15c36d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fpetground%2Fha012%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIyNDB4MjQwIiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D"
+      }
     },
     {
       "id": "yuzu-lime-sofa-height",
